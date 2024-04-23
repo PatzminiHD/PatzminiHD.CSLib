@@ -12,7 +12,7 @@ namespace PatzminiHD.CSLib
         /// <summary> The name of the Library </summary>
         public static string Name = "PatzminiHD.CSLib";
         /// <summary> The version of the Library </summary>
-        public static string Version = "v1.1.0";
+        public static string Version = "v1.2.0";
 
         /// <summary>
         /// Constructor used by the automatic assigning of attributes
