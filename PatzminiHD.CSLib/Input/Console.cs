@@ -89,9 +89,11 @@ namespace PatzminiHD.CSLib.Input
 
             private static void ClearSpace(int x1, int y1, int x2, int y2)
             {
+                //Iterate over every line
                 for (int i = y1; i < y2 ; i++)
                 {
                     System.Console.SetCursorPosition(x1, i);
+                    //Iterate over every character
                     for (int j = x1; j < x2 ; j++)
                     {
                         System.Console.Write(" ");
@@ -105,6 +107,7 @@ namespace PatzminiHD.CSLib.Input
 
                 ClearSpace(x1 + 1, y1 + 1, x2 - 1, y2 - 1);
 
+                //Draw top Line
                 System.Console.SetCursorPosition(x1, y1);
                 System.Console.Write('╔');
                 for (int i = x1 + 1; i < x2 - 1; i++)
@@ -113,12 +116,14 @@ namespace PatzminiHD.CSLib.Input
                 }
                 System.Console.Write('╗');
 
+                //Replace section of first line with title
                 System.Console.SetCursorPosition(x1 + 2, y1);
                 if (title.Length > x2 - x1 - 7)
                     System.Console.Write(title.Substring(0, x2 - x1 - 7) + "...");
                 else
                     System.Console.Write(title);
 
+                //Draw side frame
                 for (int i = y1 + 1; i < y2 - 3; i++)
                 {
                     System.Console.SetCursorPosition(x1, i);
@@ -127,6 +132,7 @@ namespace PatzminiHD.CSLib.Input
                     System.Console.Write('║');
                 }
 
+                //Draw line between message and response section
                 System.Console.SetCursorPosition(x1, y2 - 3);
                 System.Console.Write('╠');
                 for (int i = x1 + 1; i < x2 - 1; i++)
@@ -135,11 +141,13 @@ namespace PatzminiHD.CSLib.Input
                 }
                 System.Console.Write('╣');
 
+                //Draw vertical frame of response section
                 System.Console.SetCursorPosition(x1, y2 - 2);
                 System.Console.Write('║');
                 System.Console.SetCursorPosition(x2 - 1, y2 - 2);
                 System.Console.Write('║');
 
+                //Draw bottom line
                 System.Console.SetCursorPosition(x1, y2 - 1);
                 System.Console.Write('╚');
                 for (int i = x1 + 1; i < x2 - 1; i++)
@@ -279,38 +287,48 @@ namespace PatzminiHD.CSLib.Input
             {
                 List<string > result = new();
 
+                //Iterate over every line in the message
                 foreach (string Line in message.Split('\n'))
                 {
                     string line = Line;
                     while (true)
                     {
                         string temp;
+                        //If line is longer then the allowed length
                         if (line.Length > maxWidth)
                         {
                             temp = line;
                             while (temp.Length > maxWidth)
                             {
+                                //Cut the line to exactly the allowed length
                                 temp = line.Substring(0, maxWidth);
+                                //Remove the last word
                                 while (!char.IsWhiteSpace(temp.Last()))
                                 {
                                     temp = temp.Remove(temp.Length - 1);
                                 }
+                                //Remove the last whitespace
                                 temp = temp.Remove(temp.Length - 1);
 
+                                //If the whole line was one word, just cut the word
                                 if (temp.Length <= 0)
                                 {
                                     temp = line;
                                 }
                             }
+                            //Cut line by one to prevent starting the next line with a space
                             line = line.Substring(1);
                         }
-                        else
+                        else    //If the line is shorter then the max allowed length, just take the whole line
                             temp = line;
 
+                        //Remove the part of the line we took from the whole line
                         line = line.Remove(0, temp.Length);
 
+                        //Add the part of the line we took to the result
                         result.Add(temp);
 
+                        //If there is nothing more in the current line, proceed with the next one
                         if (line == "")
                             break;
                     }
@@ -339,15 +357,19 @@ namespace PatzminiHD.CSLib.Input
             public static Response Show(string message, string title, ResponseOptions responseType, int edgeDistance = 4)
             {
                 int maxWidth = System.Console.WindowWidth - edgeDistance*2, maxHight = System.Console.WindowHeight - edgeDistance*2;
+
                 if (maxWidth < 17 || maxHight < 6)
                     throw new ArgumentException("Not enough space to display Message Box");
 
+                //Replace tabulator with 4 space to fix SplitMessage function
                 message = message.Replace("\t", "    ");
 
                 List<string> messages = SplitMessage(message, maxWidth - 4);
+                
                 int x1, y1, x2, y2, readerStart = 0;
                 Response selectedResponse;
 
+                //Set Top left and bottom right point of MessageBox
                 if (messages.Count == 1)
                 {
                     x1 = (System.Console.WindowWidth / 2) - ((messages[0].Length + 4) / 2);
@@ -357,6 +379,7 @@ namespace PatzminiHD.CSLib.Input
                 }
                 else
                 {
+                    //Get the longest line in the message
                     int longestMessageLine = 0;
                     foreach (string line in messages)
                     {
@@ -381,6 +404,7 @@ namespace PatzminiHD.CSLib.Input
                     }
                 }
 
+                //Select default response
                 switch (responseType)
                 {
                     case ResponseOptions.OK:
@@ -403,11 +427,13 @@ namespace PatzminiHD.CSLib.Input
                 while(flag)
                 {
                     ClearSpace(x1 + 1, y1 + 1, x2 - 1, y2 - 3);
+                    //Write indicator if top part of message is cut off
                     if (readerStart > 0)
                     {
                         System.Console.SetCursorPosition(x2 - 5, y1 + 1);
                         System.Console.Write("...");
                     }
+                    //Write message
                     for (int i = 0; i < (y2 - y1) - 6; i++)
                     {
                         System.Console.SetCursorPosition(x1 + 2, y1 + i + 2);
@@ -417,6 +443,7 @@ namespace PatzminiHD.CSLib.Input
                         }
                         System.Console.Write(messages[i + readerStart]);
                     }
+                    //Write indicator if the bottom part of the message is cut off
                     if ((y2 - y1) - 5 + readerStart <= messages.Count)
                     {
                         System.Console.SetCursorPosition(x2 - 5, y2 - 4);
@@ -425,12 +452,15 @@ namespace PatzminiHD.CSLib.Input
 
                     DrawResponses(x2 - 1, y2 - 2, responseType, selectedResponse);
 
+                    //Get input from user
                     switch(System.Console.ReadKey(true).Key)
                     {
                         case ConsoleKey.Enter:
+                            //Break out of loop
                             flag = false;
                             break;
                         case ConsoleKey.Escape:
+                            //If escape is pressed, return a corresponding value
                             switch(responseType)
                             {
                                 case ResponseOptions.YES_NO_CANCEL:
@@ -457,6 +487,7 @@ namespace PatzminiHD.CSLib.Input
 
                         case ConsoleKey.LeftArrow:
                         case ConsoleKey.H:
+                            //Scroll through responses
                             switch(responseType)
                             {
                                 case ResponseOptions.YES_NO_CANCEL:
@@ -478,6 +509,7 @@ namespace PatzminiHD.CSLib.Input
 
                         case ConsoleKey.RightArrow:
                         case ConsoleKey.L:
+                            //Scroll through responses
                             switch (responseType)
                             {
                                 case ResponseOptions.YES_NO_CANCEL:
