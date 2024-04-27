@@ -333,7 +333,7 @@ namespace PatzminiHD.CSLib.Input
             public static Response Show(string message, string title, ResponseOptions responseType, int edgeDistance = 4)
             {
                 int maxWidth = System.Console.WindowWidth - edgeDistance*2, maxHight = System.Console.WindowHeight - edgeDistance*2;
-                if (maxWidth < 17 || maxHight < 5)
+                if (maxWidth < 17 || maxHight < 6)
                     throw new ArgumentException("Not enough space to display Message Box");
 
                 message = message.Replace("\t", "    ");
@@ -396,7 +396,12 @@ namespace PatzminiHD.CSLib.Input
                 bool flag = true;
                 while(flag)
                 {
-                    ClearSpace(x1 + 2, y1 + 2, x2 - 2, y2 - 3);
+                    ClearSpace(x1 + 1, y1 + 1, x2 - 1, y2 - 3);
+                    if (readerStart > 0)
+                    {
+                        System.Console.SetCursorPosition(x2 - 5, y1 + 1);
+                        System.Console.Write("...");
+                    }
                     for (int i = 0; i < (y2 - y1) - 6; i++)
                     {
                         System.Console.SetCursorPosition(x1 + 2, y1 + i + 2);
@@ -405,6 +410,11 @@ namespace PatzminiHD.CSLib.Input
                             break;
                         }
                         System.Console.Write(messages[i + readerStart]);
+                    }
+                    if ((y2 - y1) - 5 + readerStart <= messages.Count)
+                    {
+                        System.Console.SetCursorPosition(x2 - 5, y2 - 4);
+                        System.Console.Write("...");
                     }
 
                     DrawResponses(x2 - 1, y2 - 2, responseType, selectedResponse);
