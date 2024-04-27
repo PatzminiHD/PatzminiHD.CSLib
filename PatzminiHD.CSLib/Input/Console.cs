@@ -98,7 +98,7 @@ namespace PatzminiHD.CSLib.Input
                     }
                 }
             }
-            private static void DrawFrame(int x1, int y1, int x2, int y2)
+            private static void DrawFrame(int x1, int y1, int x2, int y2, string title)
             {
                 // ┌┐├┤─    ╔╗╠╣═
                 // └┘┴┬│    ╚╝╩╦║
@@ -113,7 +113,13 @@ namespace PatzminiHD.CSLib.Input
                 }
                 System.Console.Write('╗');
 
-                for(int i = y1 + 1; i < y2 - 3; i++)
+                System.Console.SetCursorPosition(x1 + 2, y1);
+                if (title.Length > x2 - x1 - 7)
+                    System.Console.Write(title.Substring(0, x2 - x1 - 7) + "...");
+                else
+                    System.Console.Write(title);
+
+                for (int i = y1 + 1; i < y2 - 3; i++)
                 {
                     System.Console.SetCursorPosition(x1, i);
                     System.Console.Write('║');
@@ -391,7 +397,7 @@ namespace PatzminiHD.CSLib.Input
                         throw new ArgumentException($"{nameof(responseType)} is not valid");
                 }
 
-                DrawFrame(x1, y1, x2, y2);
+                DrawFrame(x1, y1, x2, y2, title);
 
                 bool flag = true;
                 while(flag)
