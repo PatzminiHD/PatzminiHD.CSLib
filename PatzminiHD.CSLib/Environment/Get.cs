@@ -99,5 +99,27 @@ namespace PatzminiHD.CSLib.Environment
                 }
             }
         }
+        /// <summary>
+        /// The Directory to put temporary files in
+        /// </summary>
+        public static string? TempDirectory
+        {
+            get {
+                    return Path.GetTempPath();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get the path to a directory in the temporary directory with the specified name
+        /// </summary>
+        /// <param name="ProgramName">The name of the subdirectory</param>
+        /// <returns></returns>
+        public static string? TempProgramDirectory(string ProgramName)
+        {
+            if (ProgramName == null) throw new ArgumentNullException(nameof(ProgramName) + " is null");
+            if (ProgramName.Length == 0) throw new ArgumentException(nameof(ProgramName) + " cannot be empty");
+            return TempDirectory + Path.DirectorySeparatorChar + ProgramName;
+        }
     }
 }
