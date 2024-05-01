@@ -106,7 +106,6 @@ namespace PatzminiHD.CSLib.Environment
         {
             get {
                     return Path.GetTempPath();
-                }
             }
         }
 
