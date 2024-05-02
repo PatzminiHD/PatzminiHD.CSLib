@@ -22,8 +22,8 @@ namespace PatzminiHD.CSLib.Types
             get { return content; }
             set
             {
-                if(content == null)
-                    throw new ArgumentNullException("content can not be null");
+                if(value == null)
+                    throw new ArgumentNullException("value can not be null");
                 content = value;
             }
         }
