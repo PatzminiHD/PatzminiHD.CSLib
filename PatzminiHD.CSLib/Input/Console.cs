@@ -165,7 +165,7 @@ namespace PatzminiHD.CSLib.Input
                         switch(selectedResponse)
                         {
                             case Response.OK:
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 3, y);
                                 System.Console.Write("OK");
                                 System.Console.ResetColor();
@@ -182,7 +182,7 @@ namespace PatzminiHD.CSLib.Input
                             case Response.OK:
                                 System.Console.SetCursorPosition(xLeft - 7, y);
                                 System.Console.Write("Cancel");
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 10, y);
                                 System.Console.Write("OK");
                                 System.Console.ResetColor();
@@ -190,7 +190,7 @@ namespace PatzminiHD.CSLib.Input
                             case Response.CANCEL:
                                 System.Console.SetCursorPosition(xLeft - 10, y);
                                 System.Console.Write("OK");
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 7, y);
                                 System.Console.Write("Cancel");
                                 System.Console.ResetColor();
@@ -209,7 +209,7 @@ namespace PatzminiHD.CSLib.Input
                             case Response.NO:
                                 System.Console.SetCursorPosition(xLeft - 7, y);
                                 System.Console.Write("Yes");
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 3, y);
                                 System.Console.Write("No");
                                 System.Console.ResetColor();
@@ -217,7 +217,7 @@ namespace PatzminiHD.CSLib.Input
                             case Response.YES:
                                 System.Console.SetCursorPosition(xLeft - 3, y);
                                 System.Console.Write("No");
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 7, y);
                                 System.Console.Write("Yes");
                                 System.Console.ResetColor();
@@ -238,7 +238,7 @@ namespace PatzminiHD.CSLib.Input
                                 System.Console.Write("No");
                                 System.Console.SetCursorPosition(xLeft - 14, y);
                                 System.Console.Write("Yes");
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 7, y);
                                 System.Console.Write("Cancel");
                                 System.Console.ResetColor();
@@ -248,7 +248,7 @@ namespace PatzminiHD.CSLib.Input
                                 System.Console.Write("Cancel");
                                 System.Console.SetCursorPosition(xLeft - 14, y);
                                 System.Console.Write("Yes");
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 10, y);
                                 System.Console.Write("No");
                                 System.Console.ResetColor();
@@ -258,7 +258,7 @@ namespace PatzminiHD.CSLib.Input
                                 System.Console.Write("Cancel");
                                 System.Console.SetCursorPosition(xLeft - 10, y);
                                 System.Console.Write("No");
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 14, y);
                                 System.Console.Write("Yes");
                                 System.Console.ResetColor();
@@ -539,51 +539,51 @@ namespace PatzminiHD.CSLib.Input
                 if (System.Console.WindowHeight - startingPosition.top > selections.Count())
                 {
                     //No scrolling needed
-                    Visuals.Console.Color.SwapForegroundBackgroundColor();
+                    Output.Console.Color.SwapForegroundBackgroundColor();
 
                     for (int i = 0; i < selections.Count(); i++)
                     {
                         if (readerOffset != -1 && (i == readerOffset || i == readerOffset + 1))
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                         System.Console.SetCursorPosition(startingPosition.left, startingPosition.top + i + 1);
                         System.Console.Write(selections[i]);
 
                         if (i != readerOffset)
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                         for (int j = System.Console.CursorLeft; j < xEnd; j++)
                         {
                             System.Console.Write(' ');
                         }
                         if (i != readerOffset)
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                     }
                 }
                 else if (startingPosition.top > selections.Count())
                 {
                     //Drop up
-                    Visuals.Console.Color.SwapForegroundBackgroundColor();
+                    Output.Console.Color.SwapForegroundBackgroundColor();
 
                     for (int i = 0; i < selections.Count(); i++)
                     {
                         if (readerOffset != -1 && (i == readerOffset || i == readerOffset + 1))
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                         System.Console.SetCursorPosition(startingPosition.left, startingPosition.top - selections.Count() + i);
                         System.Console.Write(selections[i]);
 
                         if (i != readerOffset)
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                         for (int j = System.Console.CursorLeft; j < xEnd; j++)
                         {
                             System.Console.Write(' ');
                         }
                         if (i != readerOffset)
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                     }
                 }
                 else if (System.Console.WindowHeight - startingPosition.top > startingPosition.top)
                 {
                     //Drop down with scrolling
-                    Visuals.Console.Color.SwapForegroundBackgroundColor();
+                    Output.Console.Color.SwapForegroundBackgroundColor();
 
                     for (int i = 0; i < System.Console.WindowHeight - startingPosition.top - 1; i++)
                     {
@@ -592,30 +592,30 @@ namespace PatzminiHD.CSLib.Input
                         if(readerOffset > System.Console.WindowHeight - startingPosition.top - 2)
                         {
                             if (readerOffset != -1 && (lastPos == readerOffset || lastPos == readerOffset + 1))
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                             System.Console.Write(selections[lastPos]);
                         }
                         else
                         {
                             if (readerOffset != -1 && (i == readerOffset || i == readerOffset + 1))
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                             System.Console.Write(selections[i]);
                         }
 
                         if (i != readerOffset && (readerOffset <= System.Console.WindowHeight - startingPosition.top - 2 || lastPos != readerOffset))
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                         for (int j = System.Console.CursorLeft; j < xEnd; j++)
                         {
                             System.Console.Write(' ');
                         }
                         if (i != readerOffset && (readerOffset <= System.Console.WindowHeight - startingPosition.top - 2 || lastPos != readerOffset))
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                     }
                 }
                 else
                 {
                     //Drop up with scrolling
-                    Visuals.Console.Color.SwapForegroundBackgroundColor();
+                    Output.Console.Color.SwapForegroundBackgroundColor();
 
                     for (int i = 0; i < startingPosition.top; i++)
                     {
@@ -626,25 +626,25 @@ namespace PatzminiHD.CSLib.Input
                         if (readerOffset < selections.Count() - startingPosition.top + 1)
                         {
                             if (readerOffset != -1 && (i == readerOffset || i == readerOffset + 1))
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                             System.Console.Write(selections[i]);
                         }
                         else
                         {
                             if (readerOffset != -1 && (lastPos == readerOffset || lastPos == readerOffset + 1))
-                                Visuals.Console.Color.SwapForegroundBackgroundColor();
+                                Output.Console.Color.SwapForegroundBackgroundColor();
                             System.Console.Write(selections[lastPos]);
                         }
 
 
                         if (i != readerOffset && (i != startingPosition.top - 1 || readerOffset < selections.Count() - startingPosition.top + 1))
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                         for (int j = System.Console.CursorLeft; j < xEnd; j++)
                         {
                             System.Console.Write(' ');
                         }
                         if (i != readerOffset && i != startingPosition.top - 1)
-                            Visuals.Console.Color.SwapForegroundBackgroundColor();
+                            Output.Console.Color.SwapForegroundBackgroundColor();
                     }
                 }
 

@@ -1,6 +1,6 @@
 ﻿using PatzminiHD.CSLib.Math.Extensions;
 
-namespace PatzminiHD.CSLib.Visuals.Console
+namespace PatzminiHD.CSLib.Output.Console
 {
     /// <summary>
     /// A class for displaying a progress bar in the form of "87%  [######### ]"

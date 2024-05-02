@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PatzminiHD.CSLib.Visuals.Console
+namespace PatzminiHD.CSLib.Output.Console
 {
     /// <summary>
     /// Contains Methods for manipulating Console Colors
