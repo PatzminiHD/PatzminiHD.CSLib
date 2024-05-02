@@ -96,28 +96,29 @@ namespace PatzminiHD.CSLib.Types
         /// <param name="startPos">How many characters to skip</param>
         public void Write(uint startPos)
         {
+            var tmpContent = Content;
+            for (int i = 0; i < tmpContent.Count(); i++)
+            {
+                foreach (var character in tmpContent[i].content)
+                {
+                    if (startPos <= 0)
+                        break;
+                    tmpContent[i] = (tmpContent[i].content.Substring(1), tmpContent[i].foregroundColor, tmpContent[i].backgroundColor);
+                    startPos--;
+                }
+                if (startPos <= 0)
+                {
+                    break;
+                }
+                tmpContent.Remove(tmpContent[i]);
+            }
             ConsoleColor tmpForeground = Console.ForegroundColor;
             ConsoleColor tmpBackground = Console.BackgroundColor;
             foreach (var item in Content)
             {
-                if(startPos > 0)
-                {
-                    foreach (var character in item.content)
-                    {
-                        startPos--;
-                        if (startPos <= 0)
-                        {
-                            Console.ForegroundColor = item.foregroundColor;
-                            Console.BackgroundColor = item.backgroundColor;
-                            Console.Write(item.content);
-                            break;
-                        }
-                    }
-                    continue;
-                }
-                Console.ForegroundColor = item.foregroundColor;
-                Console.BackgroundColor = item.backgroundColor;
-                Console.Write(item.content);
+                    Console.ForegroundColor = item.foregroundColor;
+                    Console.BackgroundColor = item.backgroundColor;
+                    Console.Write(item.content);
             }
             Console.ForegroundColor = tmpForeground;
             Console.BackgroundColor = tmpBackground;
