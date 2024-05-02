@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,6 +108,22 @@ namespace PatzminiHD.CSLib.Environment
             get {
                     return Path.GetTempPath();
             }
+        }
+
+        /// <summary>
+        /// Get the default Console Color
+        /// </summary>
+        /// <returns>The default foreground and background Color</returns>
+        [Pure]
+        public static (ConsoleColor foregroundColor, ConsoleColor backgroundColor) GetDefaultColor()
+        {
+            ConsoleColor tmpForeground = Console.ForegroundColor;
+            ConsoleColor tmpBackground = Console.BackgroundColor;
+            Console.ResetColor();
+            (ConsoleColor foregroundColor, ConsoleColor backgroundColor) returnValue = (Console.ForegroundColor, Console.BackgroundColor);
+            Console.ForegroundColor = tmpForeground;
+            Console.BackgroundColor = tmpBackground;
+            return returnValue;
         }
 
         /// <summary>
