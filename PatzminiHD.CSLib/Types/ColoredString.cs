@@ -23,6 +23,21 @@ namespace PatzminiHD.CSLib.Types
             }
         }
         /// <summary>
+        /// Length of the Colored String
+        /// </summary>
+        public int Length
+        {
+            get
+            {
+                int length = 0;
+                foreach(var item in content)
+                {
+                    length += item.content.Length;
+                }
+                return length;
+            }
+        }
+        /// <summary>
         /// Default Contructor
         /// </summary>
         public ColoredString() { }
@@ -84,6 +99,15 @@ namespace PatzminiHD.CSLib.Types
             return result;
         }
         /// <summary>
+        /// Check if the content is null or empty
+        /// </summary>
+        /// <returns>True of the Content is null or empty</returns>
+        [Pure]
+        public bool IsNullOrEmpty()
+        {
+            return content == null || content.Count == 0;
+        }
+        /// <summary>
         /// Write the Colored String
         /// </summary>
         public void Write()
@@ -113,7 +137,11 @@ namespace PatzminiHD.CSLib.Types
         /// <param name="startPos">How many characters to skip</param>
         public void Write(uint startPos)
         {
-            var tmpContent = Content;
+            List<(string content, ConsoleColor foregroundColor, ConsoleColor backgroundColor)> tmpContent = new();
+            foreach (var item in Content)
+            {
+                tmpContent.Add(item);
+            }
             for (int i = 0; i < tmpContent.Count(); i++)
             {
                 foreach (var character in tmpContent[i].content)
@@ -131,7 +159,7 @@ namespace PatzminiHD.CSLib.Types
             }
             ConsoleColor tmpForeground = Console.ForegroundColor;
             ConsoleColor tmpBackground = Console.BackgroundColor;
-            foreach (var item in Content)
+            foreach (var item in tmpContent)
             {
                     Console.ForegroundColor = item.foregroundColor;
                     Console.BackgroundColor = item.backgroundColor;
@@ -156,8 +184,12 @@ namespace PatzminiHD.CSLib.Types
         /// <param name="length">How many characters to take</param>
         public void Write(uint startPos, uint length)
         {
-            var tmpContent = Content;
-            for(int i = 0; i < tmpContent.Count(); i++)
+            List<(string content, ConsoleColor foregroundColor, ConsoleColor backgroundColor)> tmpContent = new();
+            foreach (var item in Content)
+            {
+                tmpContent.Add(item);
+            }
+            for (int i = 0; i < tmpContent.Count(); i++)
             {
                 foreach(var character in tmpContent[i].content)
                 {
@@ -174,7 +206,7 @@ namespace PatzminiHD.CSLib.Types
             }
             ConsoleColor tmpForeground = Console.ForegroundColor;
             ConsoleColor tmpBackground = Console.BackgroundColor;
-            foreach (var item in Content)
+            foreach (var item in tmpContent)
             {
                 if(length > 0)
                 {
