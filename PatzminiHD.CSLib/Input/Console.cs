@@ -168,7 +168,7 @@ namespace PatzminiHD.CSLib.Input
                                 Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 3, y);
                                 System.Console.Write("OK");
-                                System.Console.ResetColor();
+                                Output.Console.Color.ResetColor();
                                 break;
                             default:
                                 System.Console.SetCursorPosition(xLeft - 3, y);
@@ -185,7 +185,7 @@ namespace PatzminiHD.CSLib.Input
                                 Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 10, y);
                                 System.Console.Write("OK");
-                                System.Console.ResetColor();
+                                Output.Console.Color.ResetColor();
                                 break;
                             case Response.CANCEL:
                                 System.Console.SetCursorPosition(xLeft - 10, y);
@@ -193,7 +193,7 @@ namespace PatzminiHD.CSLib.Input
                                 Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 7, y);
                                 System.Console.Write("Cancel");
-                                System.Console.ResetColor();
+                                Output.Console.Color.ResetColor();
                                 break;
                             default:
                                 System.Console.SetCursorPosition(xLeft - 7, y);
@@ -212,7 +212,7 @@ namespace PatzminiHD.CSLib.Input
                                 Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 3, y);
                                 System.Console.Write("No");
-                                System.Console.ResetColor();
+                                Output.Console.Color.ResetColor();
                                 break;
                             case Response.YES:
                                 System.Console.SetCursorPosition(xLeft - 3, y);
@@ -220,7 +220,7 @@ namespace PatzminiHD.CSLib.Input
                                 Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 7, y);
                                 System.Console.Write("Yes");
-                                System.Console.ResetColor();
+                                Output.Console.Color.ResetColor();
                                 break;
                             default:
                                 System.Console.SetCursorPosition(xLeft - 7, y);
@@ -241,7 +241,7 @@ namespace PatzminiHD.CSLib.Input
                                 Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 7, y);
                                 System.Console.Write("Cancel");
-                                System.Console.ResetColor();
+                                Output.Console.Color.ResetColor();
                                 break;
                             case Response.NO:
                                 System.Console.SetCursorPosition(xLeft - 7, y);
@@ -251,7 +251,7 @@ namespace PatzminiHD.CSLib.Input
                                 Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 10, y);
                                 System.Console.Write("No");
-                                System.Console.ResetColor();
+                                Output.Console.Color.ResetColor();
                                 break;
                             case Response.YES:
                                 System.Console.SetCursorPosition(xLeft - 7, y);
@@ -261,7 +261,7 @@ namespace PatzminiHD.CSLib.Input
                                 Output.Console.Color.SwapForegroundBackgroundColor();
                                 System.Console.SetCursorPosition(xLeft - 14, y);
                                 System.Console.Write("Yes");
-                                System.Console.ResetColor();
+                                Output.Console.Color.ResetColor();
                                 break;
                             default:
                                 System.Console.SetCursorPosition(xLeft - 10, y);
@@ -648,7 +648,7 @@ namespace PatzminiHD.CSLib.Input
                     }
                 }
 
-                System.Console.ResetColor();
+                Output.Console.Color.ResetColor();
             }
             /// <summary>
             /// Show a DropDownMenu

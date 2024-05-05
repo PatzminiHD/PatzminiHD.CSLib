@@ -20,5 +20,18 @@ namespace PatzminiHD.CSLib.Output.Console
             System.Console.ForegroundColor = System.Console.BackgroundColor;
             System.Console.BackgroundColor = tmp;
         }
+        /// <summary>
+        /// Reset the Color of the Console with respect to <see cref="Environment.Set.ForceConsoleColor"/>
+        /// </summary>
+        public static void ResetColor()
+        {
+            if(Environment.Set.ForceConsoleColor)
+            {
+                System.Console.ForegroundColor = Environment.Set.DefaultConsoleForegroundColor;
+                System.Console.BackgroundColor = Environment.Set.DefaultConsoleBackgroundColor;
+            }
+            else
+                System.Console.ResetColor();
+        }
     }
 }

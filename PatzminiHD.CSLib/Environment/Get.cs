@@ -119,7 +119,7 @@ namespace PatzminiHD.CSLib.Environment
         {
             ConsoleColor tmpForeground = Console.ForegroundColor;
             ConsoleColor tmpBackground = Console.BackgroundColor;
-            Console.ResetColor();
+            Output.Console.Color.ResetColor();
             (ConsoleColor foregroundColor, ConsoleColor backgroundColor) returnValue = (Console.ForegroundColor, Console.BackgroundColor);
             Console.ForegroundColor = tmpForeground;
             Console.BackgroundColor = tmpBackground;
