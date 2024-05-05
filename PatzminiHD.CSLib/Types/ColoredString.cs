@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.Contracts;
 
 namespace PatzminiHD.CSLib.Types
 {
@@ -26,6 +21,28 @@ namespace PatzminiHD.CSLib.Types
                     throw new ArgumentNullException("value can not be null");
                 content = value;
             }
+        }
+        /// <summary>
+        /// Default Contructor
+        /// </summary>
+        public ColoredString() { }
+        /// <summary>
+        /// Instantiate a new ColoredString Object with string with default colors
+        /// </summary>
+        /// <param name="content">The content</param>
+        public ColoredString(string content)
+        {
+            Add(content);
+        }
+        /// <summary>
+        /// Instantiate a new ColoredString Object with string with specified colors
+        /// </summary>
+        /// <param name="content">The content</param>
+        /// <param name="foregroundColor">The foreground Color</param>
+        /// <param name="backgroundColor">The background Color</param>
+        public ColoredString(string content, ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+        {
+            Add(content, foregroundColor, backgroundColor);
         }
 
         /// <summary>
