@@ -68,11 +68,31 @@
         {
             if (content.IsNullOrEmpty())
                 return;
+            //Draw Content
             for (uint i = 0; i < Height; i++)
             {
                 System.Console.SetCursorPosition((int)leftPos, (int)(topPos + i));
                 content.Write(i * width, width);
             }
+
+            //Fill remaining space
+            ConsoleColor tmpForeground = System.Console.ForegroundColor;
+            ConsoleColor tmpBackground = System.Console.BackgroundColor;
+            System.Console.ForegroundColor = content.Content[0].foregroundColor;
+            System.Console.BackgroundColor = content.Content[0].backgroundColor;
+            for (int i = System.Console.CursorLeft; i < LeftPos + Width; i++)
+            {
+                System.Console.Write(' ');
+            }
+            System.Console.ForegroundColor = tmpForeground;
+            System.Console.BackgroundColor = tmpBackground;
+        }
+        /// <summary>
+        /// Clear the Content
+        /// </summary>
+        public void Clear()
+        {
+            Content = new();
         }
     }
 }
