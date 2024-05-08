@@ -9,6 +9,7 @@ namespace PatzminiHD.CSLib.Output.Console.Table
     {
         private List<RowBase> rows = new();
         private List<(List<(Entry, uint)>, uint)> tableValues = new();
+        private (List<(Entry, uint)>, uint) columnHeaders = new();
         private uint topPos = 0, leftPos = 0;
         private int highlightedRow = -1, highlightedColumn = -1;
         private bool isColored = true, autoDraw = false;
@@ -29,6 +30,14 @@ namespace PatzminiHD.CSLib.Output.Console.Table
                 tableValues = value;
                 PopulateTableRows();
             }
+        }
+        /// <summary>
+        /// The Headers of the table columns
+        /// </summary>
+        public (List<(Entry, uint)>, uint) ColumnHeaders
+        {
+            get { return columnHeaders; }
+            set { columnHeaders = value; }
         }
         /// <summary>
         /// The Top Position of the table
@@ -136,11 +145,19 @@ namespace PatzminiHD.CSLib.Output.Console.Table
         }
 
         /// <summary>
-        /// Constructor for the TableBase
+        /// Constructor for the TableBase, initialising only the table values
         /// </summary>
         public Base(List<(List<(Entry, uint)>, uint)> tableValues)
         {
             TableValues = tableValues;
+        }
+        /// <summary>
+        /// Constructor for the TableBase, initialising the table values as well as headers
+        /// </summary>
+        public Base(List<(List<(Entry, uint)>, uint)> tableValues, (List<(Entry, uint)>, uint) columnHeaders)
+        {
+            TableValues = tableValues;
+            ColumnHeaders = columnHeaders;
         }
         private void AutoDrawMethod()
         {
@@ -155,6 +172,28 @@ namespace PatzminiHD.CSLib.Output.Console.Table
             if (TableValues == null || TableValues.Count == 0)
                 return;
             uint i = 0, j = 0;
+
+            if (ColumnHeaders.Item1 != null && ColumnHeaders.Item1.Count > 0)
+            {
+                RowBase headers = new()
+                {
+                    IsEvenRow = i % 2 == 0,
+                    IsColored = IsColored,
+                    Height = ColumnHeaders.Item2,
+                    TopPos = j + TopPos,
+                    LeftPos = LeftPos,
+                    ForegroundColor = ForegroundColor,
+                    BackgroundColorEven = BackgroundColorEven,
+                    BackgroundColorOdd = BackgroundColorOdd,
+                    HighlightForegroundColor = HighlightForegroundColor,
+                    HighlightBackgroundColor = HighlightBackgroundColor,
+                    RowValues = ColumnHeaders.Item1,
+                };
+
+                rows.Add(headers);
+                i++;
+                j += ColumnHeaders.Item2;
+            }
 
             foreach (var value in TableValues)
             {
@@ -186,10 +225,21 @@ namespace PatzminiHD.CSLib.Output.Console.Table
         {
             for (int i = 0; i < rows.Count; i++)
             {
-                if (i == HighlightedRow)
+                if(ColumnHeaders.Item1 == null || ColumnHeaders.Item1.Count == 0)
+                {
+                    if(i == HighlightedRow)
+                    {
+                        rows[i].HighlightedCell = HighlightedColumn;
+                    }
+                }
+                else if (i - 1 == HighlightedRow)
+                {
                     rows[i].HighlightedCell = HighlightedColumn;
+                }
                 else
+                {
                     rows[i].HighlightedCell = -1;
+                }
                 rows[i].Draw();
             }
         }
