@@ -9,30 +9,30 @@
         private ConsoleColor backgroundColor = Environment.Get.GetDefaultColor().backgroundColor;
         private ConsoleColor highlightForegroundColor = ConsoleColor.Black;
         private ConsoleColor highlightBackgroundColor = ConsoleColor.White;
-        private bool isHighlighted = false;
+        private bool isHighlighted = false, autoDraw = false;
         /// <summary> The ForegroundColor of the Cell </summary>
         public ConsoleColor ForegroundColor
         {
             get { return foregroundColor; }
-            set { foregroundColor = value; }
+            set { foregroundColor = value; AutoDrawMethod(); }
         }
         /// <summary> The BackgroundColor of the Cell </summary>
         public ConsoleColor BackgroundColor
         {
             get { return backgroundColor; }
-            set { backgroundColor = value; }
+            set { backgroundColor = value; AutoDrawMethod(); }
         }
         /// <summary> The HighlightForegroundColor of the Cell </summary>
         public ConsoleColor HighlightForegroundColor
         {
             get { return highlightForegroundColor; }
-            set { highlightForegroundColor = value; }
+            set { highlightForegroundColor = value; AutoDrawMethod(); }
         }
         /// <summary> The HighlightBackgroundColor of the Cell </summary>
         public ConsoleColor HighlightBackgroundColor
         {
             get { return highlightBackgroundColor; }
-            set { highlightBackgroundColor = value; }
+            set { highlightBackgroundColor = value; AutoDrawMethod(); }
         }
         /// <summary>
         /// True if the cell is highlighted
@@ -40,7 +40,15 @@
         public bool IsHighlighted
         {
             get { return isHighlighted; }
-            set { isHighlighted = value; }
+            set { isHighlighted = value; AutoDrawMethod(); }
+        }
+        /// <summary>
+        /// True to automatically redraw the cell when a property changes
+        /// </summary>
+        public bool AutoDraw
+        {
+            get { return autoDraw; }
+            set { autoDraw = value; AutoDrawMethod(); }
         }
         /// <summary>
         /// The Content as an String
@@ -55,6 +63,7 @@
             {
                 Clear();
                 Content.Add(value, ForegroundColor, BackgroundColor);
+                AutoDrawMethod();
             }
         }
         /// <summary>
@@ -79,6 +88,7 @@
                 if (stringValue == null)
                     return;
                 Content.Add(stringValue, ForegroundColor, BackgroundColor);
+                AutoDrawMethod();
             }
         }
         /// <summary>
@@ -103,6 +113,7 @@
                 if (stringValue == null)
                     return;
                 Content.Add(stringValue, ForegroundColor, BackgroundColor);
+                AutoDrawMethod();
             }
         }
         /// <summary>
@@ -127,10 +138,17 @@
                 if (stringValue == null)
                     return;
                 Content.Add(stringValue, ForegroundColor, BackgroundColor);
+                AutoDrawMethod();
             }
         }
+        private void AutoDrawMethod()
+        {
+            if (!AutoDraw)
+                return;
+            Draw();
+        }
         /// <summary>
-        /// Draw the 
+        /// Draw the cell
         /// </summary>
         public new void Draw()
         {

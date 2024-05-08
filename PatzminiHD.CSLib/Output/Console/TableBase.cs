@@ -11,7 +11,7 @@ namespace PatzminiHD.CSLib.Output.Console
         private List<(List<(object, Type, uint)>, uint)> tableValues = new();
         private uint topPos = 0, leftPos = 0;
         private int highlightedRow = -1, highlightedColumn = -1;
-        private bool isColored = true;
+        private bool isColored = true, autoDraw = false;
         private ConsoleColor foregroundColor = Get.GetDefaultColor().foregroundColor;
         private ConsoleColor backgroundColorEven = Get.GetDefaultColor().backgroundColor;
         private ConsoleColor backgroundColorOdd = ConsoleColor.DarkGray;
@@ -36,7 +36,7 @@ namespace PatzminiHD.CSLib.Output.Console
         public uint TopPos
         {
             get { return topPos; }
-            set { topPos = value; }
+            set { topPos = value; PopulateTableRows(); }
         }
         /// <summary>
         /// The Left Position of the table
@@ -44,7 +44,7 @@ namespace PatzminiHD.CSLib.Output.Console
         public uint LeftPos
         {
             get { return leftPos; }
-            set { leftPos = value; }
+            set { leftPos = value; PopulateTableRows(); }
         }
         /// <summary>
         /// The Row that is highlighted <br/>-1 for no highlighting
@@ -54,9 +54,12 @@ namespace PatzminiHD.CSLib.Output.Console
             get { return highlightedRow; }
             set
             {
+                if (rows == null || rows.Count == 0)
+                    return;
                 if (value >= rows.Count)
                     throw new ArgumentException(nameof(HighlightedRow) + " can not be larger then number of rows");
                 highlightedRow = value;
+                PopulateTableRows();
             }
         }
         /// <summary>
@@ -67,9 +70,12 @@ namespace PatzminiHD.CSLib.Output.Console
             get { return highlightedColumn; }
             set
             {
+                if (rows == null || rows.Count == 0)
+                    return;
                 if (rows.Count == 0 || value >= rows[0].RowValues.Count)
                     throw new ArgumentException(nameof(HighlightedColumn) + "can not be larger then length of rows");
                 highlightedColumn = value;
+                PopulateTableRows();
             }
         }
         /// <summary>
@@ -78,7 +84,7 @@ namespace PatzminiHD.CSLib.Output.Console
         public ConsoleColor ForegroundColor
         {
             get { return foregroundColor; }
-            set { foregroundColor = value; }
+            set { foregroundColor = value; PopulateTableRows(); }
         }
         /// <summary>
         /// The Background Color for even cells
@@ -86,7 +92,7 @@ namespace PatzminiHD.CSLib.Output.Console
         public ConsoleColor BackgroundColorEven
         {
             get { return backgroundColorEven; }
-            set { backgroundColorEven = value; }
+            set { backgroundColorEven = value; PopulateTableRows(); }
         }
         /// <summary>
         /// The Background Color for odd cells
@@ -94,7 +100,7 @@ namespace PatzminiHD.CSLib.Output.Console
         public ConsoleColor BackgroundColorOdd
         {
             get { return backgroundColorOdd; }
-            set { backgroundColorOdd = value; }
+            set { backgroundColorOdd = value; PopulateTableRows(); }
         }
         /// <summary>
         /// The Foreground Color for highlighted cells
@@ -102,7 +108,7 @@ namespace PatzminiHD.CSLib.Output.Console
         public ConsoleColor HighlightForegroundColor
         {
             get { return highlightForegroundColor; }
-            set { highlightForegroundColor = value; }
+            set { highlightForegroundColor = value; PopulateTableRows(); }
         }
         /// <summary>
         /// The Background Color for highlighted cells
@@ -110,7 +116,7 @@ namespace PatzminiHD.CSLib.Output.Console
         public ConsoleColor HighlightBackgroundColor
         {
             get { return highlightBackgroundColor; }
-            set { highlightBackgroundColor = value; }
+            set { highlightBackgroundColor = value; PopulateTableRows(); }
         }
         /// <summary>
         /// True if the Cells should be colored
@@ -118,19 +124,36 @@ namespace PatzminiHD.CSLib.Output.Console
         public bool IsColored
         {
             get { return isColored; }
-            set { isColored = value; }
+            set { isColored = value; PopulateTableRows(); }
+        }
+        /// <summary>
+        /// True if the table should automatically redraw when a property changes
+        /// </summary>
+        public bool AutoDraw
+        {
+            get { return autoDraw; }
+            set { autoDraw = value; PopulateTableRows(); }
         }
 
         /// <summary>
         /// Constructor for the TableBase
         /// </summary>
-        public TableBase()
+        public TableBase(List<(List<(object, Type, uint)>, uint)> tableValues)
         {
+            TableValues = tableValues;
+        }
+        private void AutoDrawMethod()
+        {
+            if(!AutoDraw)
+                return;
+            Draw();
         }
 
         private void PopulateTableRows()
         {
             rows = new();
+            if (TableValues == null || TableValues.Count == 0)
+                return;
             uint i = 0, j = 0;
 
             foreach (var value in TableValues)
@@ -154,6 +177,7 @@ namespace PatzminiHD.CSLib.Output.Console
                 i++;
                 j += value.Item2;
             }
+            AutoDrawMethod();
         }
         /// <summary>
         /// Draw every Cell in the Table

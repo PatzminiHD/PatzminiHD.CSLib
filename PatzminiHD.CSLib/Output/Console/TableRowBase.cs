@@ -7,7 +7,7 @@
     {
         private List<(object, Type, uint)> rowValues = new();
         private List<TableCell> cells = new();
-        private bool isEvenRow = false, isColored = true;
+        private bool isEvenRow = false, isColored = true, autoDraw = false;
         private uint height = 1, topPos, leftPos;
         private int highlightedCell = -1;
         private ConsoleColor foregroundColor = Environment.Get.GetDefaultColor().foregroundColor;
@@ -33,7 +33,7 @@
         public bool IsEvenRow
         {
             get { return isEvenRow; }
-            set { isEvenRow = value; }
+            set { isEvenRow = value; PopulateCells(); }
         }
         /// <summary>
         /// True if the Color should be switched between each Row
@@ -41,7 +41,15 @@
         public bool IsColored
         {
             get { return isColored; }
-            set {  isColored = value; }
+            set {  isColored = value; PopulateCells(); }
+        }
+        /// <summary>
+        /// True to automatically redraw the row when a property changes
+        /// </summary>
+        public bool AutoDraw
+        {
+            get { return autoDraw; }
+            set { autoDraw = value; PopulateCells(); }
         }
         /// <summary>
         /// The Height of the Row
@@ -49,7 +57,7 @@
         public uint Height
         {
             get { return height; }
-            set { height = value; }
+            set { height = value; PopulateCells(); }
         }
         /// <summary>
         /// The Top position of the Row
@@ -57,7 +65,7 @@
         public uint TopPos
         {
             get { return topPos; }
-            set { topPos = value; }
+            set { topPos = value; PopulateCells(); }
         }
         /// <summary>
         /// The left position of the Row
@@ -65,7 +73,7 @@
         public uint LeftPos
         {
             get { return leftPos; }
-            set { leftPos = value; }
+            set { leftPos = value; PopulateCells(); }
         }
         /// <summary>
         /// The Foreground Color of the cells
@@ -73,7 +81,7 @@
         public ConsoleColor ForegroundColor
         {
             get { return foregroundColor; }
-            set { foregroundColor = value; }
+            set { foregroundColor = value; PopulateCells(); }
         }
         /// <summary>
         /// The Background Color for even cells
@@ -81,7 +89,7 @@
         public ConsoleColor BackgroundColorEven
         {
             get { return backgroundColorEven; }
-            set { backgroundColorEven = value; }
+            set { backgroundColorEven = value; PopulateCells(); }
         }
         /// <summary>
         /// The Background Color for odd cells
@@ -89,7 +97,7 @@
         public ConsoleColor BackgroundColorOdd
         {
             get { return backgroundColorOdd; }
-            set { backgroundColorOdd = value; }
+            set { backgroundColorOdd = value; PopulateCells(); }
         }
         /// <summary>
         /// The Foreground Color for highlighted cells
@@ -97,7 +105,7 @@
         public ConsoleColor HighlightForegroundColor
         {
             get { return highlightForegroundColor; }
-            set { highlightForegroundColor = value; }
+            set { highlightForegroundColor = value; PopulateCells(); }
         }
         /// <summary>
         /// The Background Color for highlighted cells
@@ -105,7 +113,7 @@
         public ConsoleColor HighlightBackgroundColor
         {
             get { return highlightBackgroundColor; }
-            set { highlightBackgroundColor = value; }
+            set { highlightBackgroundColor = value; PopulateCells(); }
         }
 
 
@@ -119,6 +127,7 @@
                 if (value >= rowValues.Count)
                     throw new ArgumentException(nameof(HighlightedCell) + " can not be larger then number of row values");
                 highlightedCell = value;
+                PopulateCells();
             }
         }
         /// <summary>
@@ -127,9 +136,17 @@
         public TableRowBase()
         {
         }
+        private void AutoDrawMethod()
+        {
+            if (!AutoDraw)
+                return;
+            Draw();
+        }
         private void PopulateCells()
         {
             cells = new();
+            if(RowValues == null ||  RowValues.Count == 0)
+                return;
 
             int i = 0;
             if(!IsEvenRow)
@@ -145,6 +162,7 @@
                 cell.LeftPos = LeftPos + j;
                 cell.TopPos = TopPos;
                 cell.ForegroundColor = ForegroundColor;
+                cell.AutoDraw = AutoDraw;
                 j += column.Item3;
 
                 if (i % 2 == 0)
@@ -179,6 +197,7 @@
                 cells.Add(cell);
                 i++;
             }
+            AutoDrawMethod();
         }
         /// <summary>
         /// Draw all cells in the Row
