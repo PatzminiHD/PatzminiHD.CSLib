@@ -8,8 +8,9 @@ namespace PatzminiHD.CSLib.Output.Console.Table
     public class Base
     {
         private List<RowBase> rows = new();
-        private List<(List<(Entry, uint)>, uint)> tableValues = new();
+        private List<(List<Entry>, uint)> tableValues = new();
         private (List<(Entry, uint)>, uint) columnHeaders = new();
+        private List<uint> columnWidths = new();
         private uint topPos = 0, leftPos = 0;
         private int highlightedRow = -1, highlightedColumn = -1;
         private bool isColored = true, autoDraw = false;
@@ -22,7 +23,7 @@ namespace PatzminiHD.CSLib.Output.Console.Table
         /// <summary>
         /// The values in the table
         /// </summary>
-        public List<(List<(Entry, uint)>, uint)> TableValues
+        public List<(List<Entry>, uint)> TableValues
         {
             get { return tableValues; }
             set
@@ -37,7 +38,15 @@ namespace PatzminiHD.CSLib.Output.Console.Table
         public (List<(Entry, uint)>, uint) ColumnHeaders
         {
             get { return columnHeaders; }
-            set { columnHeaders = value; }
+            set { columnHeaders = value; PopulateTableRows(); }
+        }
+        /// <summary>
+        /// The Width of the table columns<br/>Is only used when <see cref="ColumnHeaders"/> is not set
+        /// </summary>
+        public List<uint> ColumnWidths
+        {
+            get { return columnWidths; }
+            set { columnWidths = value; PopulateTableRows(); }
         }
         /// <summary>
         /// The Top Position of the table
@@ -145,19 +154,20 @@ namespace PatzminiHD.CSLib.Output.Console.Table
         }
 
         /// <summary>
-        /// Constructor for the TableBase, initialising only the table values
-        /// </summary>
-        public Base(List<(List<(Entry, uint)>, uint)> tableValues)
-        {
-            TableValues = tableValues;
-        }
-        /// <summary>
         /// Constructor for the TableBase, initialising the table values as well as headers
         /// </summary>
-        public Base(List<(List<(Entry, uint)>, uint)> tableValues, (List<(Entry, uint)>, uint) columnHeaders)
+        public Base(List<(List<Entry>, uint)> tableValues, (List<(Entry, uint)>, uint) columnHeaders)
         {
             TableValues = tableValues;
             ColumnHeaders = columnHeaders;
+        }
+        /// <summary>
+         /// Constructor for the TableBase, initialising the table values as well as the column widths
+         /// </summary>
+        public Base(List<(List<Entry>, uint)> tableValues, List<uint> columnWidths)
+        {
+            TableValues = tableValues;
+            ColumnWidths = columnWidths;
         }
         private void AutoDrawMethod()
         {
@@ -169,7 +179,7 @@ namespace PatzminiHD.CSLib.Output.Console.Table
         private void PopulateTableRows()
         {
             rows = new();
-            if (TableValues == null || TableValues.Count == 0)
+            if (TableValues == null || TableValues.Count == 0 || (ColumnWidths.Count == 0 && (ColumnHeaders.Item1 == null || ColumnHeaders.Item1.Count == 0)))
                 return;
             uint i = 0, j = 0;
 
@@ -197,6 +207,18 @@ namespace PatzminiHD.CSLib.Output.Console.Table
 
             foreach (var value in TableValues)
             {
+                List<(Entry, uint)> rowValues = new();
+                for(int k = 0; k < value.Item1.Count; k++)
+                {
+                    if (ColumnHeaders.Item1 != null && ColumnHeaders.Item1.Count > 0 && ColumnHeaders.Item1.Count >= k)
+                        rowValues.Add((value.Item1[k], ColumnHeaders.Item1[(int)k].Item2));
+                    else if (ColumnHeaders.Item1 != null && ColumnHeaders.Item1.Count > k)
+                        rowValues.Add((value.Item1[k], ColumnHeaders.Item1[(int)k].Item2));
+                    else if (ColumnWidths != null && ColumnWidths.Count > k)
+                        rowValues.Add((value.Item1[k], ColumnWidths[k]));
+                    else
+                        rowValues.Add((value.Item1[k], 0));
+                }
                 RowBase row = new()
                 {
                     IsEvenRow = i % 2 == 0,
@@ -209,7 +231,7 @@ namespace PatzminiHD.CSLib.Output.Console.Table
                     BackgroundColorOdd = BackgroundColorOdd,
                     HighlightForegroundColor = HighlightForegroundColor,
                     HighlightBackgroundColor = HighlightBackgroundColor,
-                    RowValues = value.Item1,
+                    RowValues = rowValues,
                 };
 
                 rows.Add(row);
