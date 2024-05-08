@@ -1,12 +1,12 @@
-﻿namespace PatzminiHD.CSLib.Output.Console
+﻿namespace PatzminiHD.CSLib.Output.Console.Table
 {
     /// <summary>
     /// Base Class for a table row
     /// </summary>
-    public class TableRowBase
+    public class RowBase
     {
-        private List<(object, Type, uint)> rowValues = new();
-        private List<TableCell> cells = new();
+        private List<(Entry, uint)> rowValues = new();
+        private List<Cell> cells = new();
         private bool isEvenRow = false, isColored = true, autoDraw = false;
         private uint height = 1, topPos, leftPos;
         private int highlightedCell = -1;
@@ -18,7 +18,7 @@
         /// <summary>
         /// The Values in this Row<br/>Tuple of object CellValue, Type TypeOfCellValue, uint Width
         /// </summary>
-        public List<(object, Type, uint)> RowValues
+        public List<(Entry, uint)> RowValues
         {
             get { return rowValues; }
             set
@@ -41,7 +41,7 @@
         public bool IsColored
         {
             get { return isColored; }
-            set {  isColored = value; PopulateCells(); }
+            set { isColored = value; PopulateCells(); }
         }
         /// <summary>
         /// True to automatically redraw the row when a property changes
@@ -123,7 +123,8 @@
         public int HighlightedCell
         {
             get { return highlightedCell; }
-            set {
+            set
+            {
                 if (value >= rowValues.Count)
                     throw new ArgumentException(nameof(HighlightedCell) + " can not be larger then number of row values");
                 highlightedCell = value;
@@ -133,7 +134,7 @@
         /// <summary>
         /// Instantiate a new object of TableRowBase class
         /// </summary>
-        public TableRowBase()
+        public RowBase()
         {
         }
         private void AutoDrawMethod()
@@ -145,25 +146,25 @@
         private void PopulateCells()
         {
             cells = new();
-            if(RowValues == null ||  RowValues.Count == 0)
+            if (RowValues == null || RowValues.Count == 0)
                 return;
 
             int i = 0;
-            if(!IsEvenRow)
+            if (!IsEvenRow)
                 i = 1;
 
             uint j = 0;
 
-            foreach(var column in RowValues)
+            foreach (var column in RowValues)
             {
-                TableCell cell = new TableCell();
-                cell.Width = column.Item3;
+                Cell cell = new Cell();
+                cell.Width = column.Item2;
                 cell.Height = Height;
                 cell.LeftPos = LeftPos + j;
                 cell.TopPos = TopPos;
                 cell.ForegroundColor = ForegroundColor;
                 cell.AutoDraw = AutoDraw;
-                j += column.Item3;
+                j += column.Item2;
 
                 if (i % 2 == 0)
                 {
@@ -174,21 +175,21 @@
                     cell.BackgroundColor = BackgroundColorOdd;
                 }
 
-                if (column.Item2 == typeof(string))
+                if (column.Item1.Type == typeof(string))
                 {
-                    cell.ContentString = (string)column.Item1;
+                    cell.ContentString = (string)column.Item1.Value;
                 }
-                else if(column.Item2 == typeof(int))
+                else if (column.Item1.Type == typeof(int))
                 {
-                    cell.ContentInt = (int)column.Item1;
+                    cell.ContentInt = (int)column.Item1.Value;
                 }
-                else if (column.Item2 == typeof(double))
+                else if (column.Item1.Type == typeof(double))
                 {
-                    cell.ContentDouble = (double)column.Item1;
+                    cell.ContentDouble = (double)column.Item1.Value;
                 }
-                else if (column.Item2 == typeof(DateTime))
+                else if (column.Item1.Type == typeof(DateTime))
                 {
-                    cell.ContentDateTime = (DateTime)column.Item1;
+                    cell.ContentDateTime = (DateTime)column.Item1.Value;
                 }
                 else
                 {

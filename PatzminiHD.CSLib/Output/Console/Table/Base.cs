@@ -1,14 +1,14 @@
 ﻿using PatzminiHD.CSLib.Environment;
 
-namespace PatzminiHD.CSLib.Output.Console
+namespace PatzminiHD.CSLib.Output.Console.Table
 {
     /// <summary>
     /// Base class for a table
     /// </summary>
-    public class TableBase
+    public class Base
     {
-        private List<TableRowBase> rows = new();
-        private List<(List<(object, Type, uint)>, uint)> tableValues = new();
+        private List<RowBase> rows = new();
+        private List<(List<(Entry, uint)>, uint)> tableValues = new();
         private uint topPos = 0, leftPos = 0;
         private int highlightedRow = -1, highlightedColumn = -1;
         private bool isColored = true, autoDraw = false;
@@ -21,11 +21,11 @@ namespace PatzminiHD.CSLib.Output.Console
         /// <summary>
         /// The values in the table
         /// </summary>
-        public List<(List<(object, Type, uint)>, uint)> TableValues
+        public List<(List<(Entry, uint)>, uint)> TableValues
         {
             get { return tableValues; }
             set
-            { 
+            {
                 tableValues = value;
                 PopulateTableRows();
             }
@@ -138,13 +138,13 @@ namespace PatzminiHD.CSLib.Output.Console
         /// <summary>
         /// Constructor for the TableBase
         /// </summary>
-        public TableBase(List<(List<(object, Type, uint)>, uint)> tableValues)
+        public Base(List<(List<(Entry, uint)>, uint)> tableValues)
         {
             TableValues = tableValues;
         }
         private void AutoDrawMethod()
         {
-            if(!AutoDraw)
+            if (!AutoDraw)
                 return;
             Draw();
         }
@@ -158,18 +158,18 @@ namespace PatzminiHD.CSLib.Output.Console
 
             foreach (var value in TableValues)
             {
-                TableRowBase row = new()
+                RowBase row = new()
                 {
                     IsEvenRow = i % 2 == 0,
-                    IsColored = this.IsColored,
+                    IsColored = IsColored,
                     Height = value.Item2,
-                    TopPos = j + this.TopPos,
-                    LeftPos = this.LeftPos,
-                    ForegroundColor = this.ForegroundColor,
-                    BackgroundColorEven = this.BackgroundColorEven,
-                    BackgroundColorOdd = this.BackgroundColorOdd,
-                    HighlightForegroundColor = this.HighlightForegroundColor,
-                    HighlightBackgroundColor = this.HighlightBackgroundColor,
+                    TopPos = j + TopPos,
+                    LeftPos = LeftPos,
+                    ForegroundColor = ForegroundColor,
+                    BackgroundColorEven = BackgroundColorEven,
+                    BackgroundColorOdd = BackgroundColorOdd,
+                    HighlightForegroundColor = HighlightForegroundColor,
+                    HighlightBackgroundColor = HighlightBackgroundColor,
                     RowValues = value.Item1,
                 };
 

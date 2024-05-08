@@ -1,9 +1,9 @@
-﻿namespace PatzminiHD.CSLib.Output.Console
+﻿namespace PatzminiHD.CSLib.Output.Console.Table
 {
     /// <summary>
     /// Base Class for a Table Cell
     /// </summary>
-    public class TableCell : CellBase
+    public class Cell : CellBase
     {
         private ConsoleColor foregroundColor = Environment.Get.GetDefaultColor().foregroundColor;
         private ConsoleColor backgroundColor = Environment.Get.GetDefaultColor().backgroundColor;
@@ -73,7 +73,7 @@
         {
             get
             {
-                if(int.TryParse(ContentString, out int value))
+                if (int.TryParse(ContentString, out int value))
                 {
                     return value;
                 }
@@ -152,9 +152,9 @@
         /// </summary>
         public new void Draw()
         {
-            if(Content != null && Content.Content != null && Content.Content.Count > 0)
+            if (Content != null && Content.Content != null && Content.Content.Count > 0)
             {
-                if(IsHighlighted)
+                if (IsHighlighted)
                 {
                     //Set Highlight Color
                     var tmp = Content.Content[0];
