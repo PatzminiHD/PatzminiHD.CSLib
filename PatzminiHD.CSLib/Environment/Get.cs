@@ -137,5 +137,26 @@ namespace PatzminiHD.CSLib.Environment
             if (ProgramName.Length == 0) throw new ArgumentException(nameof(ProgramName) + " cannot be empty");
             return TempDirectory + Path.DirectorySeparatorChar + ProgramName;
         }
+
+        /// <summary>
+        /// Get the path to a directory where to store Settings
+        /// </summary>
+        /// <param name="ProgramName">The name of the program</param>
+        /// <returns></returns>
+        public static string ProgramSettingsDirectory(string ProgramName)
+        {
+            if (ProgramName == null) throw new ArgumentNullException(nameof(ProgramName) + " is null");
+            if (ProgramName.Length == 0) throw new ArgumentException(nameof(ProgramName) + " cannot be empty");
+            if (ProgramName.StartsWith(Path.DirectorySeparatorChar)) throw new ArgumentException(nameof(ProgramName) + " cannot start with " + Path.DirectorySeparatorChar);
+            switch (OS)
+            {
+                case OperatingSystem.Windows:
+                    return Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), Info.Name, ProgramName);
+                case OperatingSystem.Linux:
+                    return Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".config", Info.Name, ProgramName);
+                default:
+                    throw new Exception("Getting settings directory not implemented for Operating System \"" + OsString + "\"");
+            }
+        }
     }
 }
