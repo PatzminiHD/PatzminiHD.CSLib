@@ -32,7 +32,7 @@ namespace PatzminiHD.CSLib.Settings
         /// <exception cref="Exception"> When <see cref="ApplicationName"/> is null </exception>
         public void Serialize()
         {
-            if (ApplicationName == null)
+            if (ApplicationName == null || ApplicationName == "")
                 throw new Exception(nameof(ApplicationName) + " has to be set");
 
             if (!Directory.Exists(Environment.Get.ProgramSettingsDirectory(ApplicationName)))
@@ -51,7 +51,7 @@ namespace PatzminiHD.CSLib.Settings
         /// <exception cref="Exception"> When deserializing failed </exception>
         public T Deserialze<T>()
         {
-            if (ApplicationName == null)
+            if (ApplicationName == null || ApplicationName == "")
                 throw new Exception(nameof(ApplicationName) + " has to be set");
 
             using (Stream reader = new FileStream(ApplicationSettingsFilePath, FileMode.Open))
