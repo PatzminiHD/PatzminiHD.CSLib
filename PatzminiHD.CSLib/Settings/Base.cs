@@ -70,5 +70,62 @@ namespace PatzminiHD.CSLib.Settings
                 return parsedObject;
             }
         }
+
+        /// <summary>
+        /// Compares two version strings in the format "vX.Y.Z" and returns true if v1 is greater than v2
+        /// </summary>
+        /// <param name="v1">Version string 1</param>
+        /// <param name="v2">Version string 2</param>
+        /// <returns>True if v1 is greater than v2, otherwise false</returns>
+        /// <exception cref="ArgumentException">If Parsing of version string failed</exception>
+        public static bool IsGreaterVersion(string v1, string v2)
+        {
+            if (v1.ToLower().StartsWith('v'))
+                v1 = v1.Substring(1);
+            if (v2.ToLower().StartsWith('v'))
+                v2 = v2.Substring(1);
+            string[] v1Parts = v1.Split('.');
+            string[] v2Parts = v2.Split('.');
+            if (v1Parts.Length < 1 || v2Parts.Length < 1)
+            {
+                throw new ArgumentException("Version strings have to have at least one number");
+            }
+            List<uint> v1Numbers = new();
+            List<uint> v2Numbers = new();
+            foreach (string part in v1Parts)
+            {
+                if (uint.TryParse(part, out uint number))
+                {
+                    v1Numbers.Add(number);
+                }
+                else
+                {
+                    throw new ArgumentException("Could not parse version 1");
+                }
+            }
+            foreach (string part in v2Parts)
+            {
+                if (uint.TryParse(part, out uint number))
+                {
+                    v2Numbers.Add(number);
+                }
+                else
+                {
+                    throw new ArgumentException("Could not parse version 1");
+                }
+            }
+            for (int i = 0; i < v1Numbers.Count; i++)
+            {
+                if (v2Numbers.Count <= i)
+                {
+                    return true;
+                }
+                if (v1Numbers[i] > v2Numbers[i])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
