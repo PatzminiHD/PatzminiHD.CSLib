@@ -191,6 +191,10 @@
                 {
                     cell.ContentDateTime = (DateTime)column.Item1.Value;
                 }
+                else if (column.Item1.Type == typeof(TimeSpan))
+                {
+                    cell.ContentTimeSpan= (TimeSpan?)column.Item1.Value;
+                }
                 else
                 {
                     continue;

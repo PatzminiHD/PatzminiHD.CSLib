@@ -1,4 +1,6 @@
-﻿namespace PatzminiHD.CSLib.Output.Console.Table
+﻿using PatzminiHD.CSLib.ExtensionMethods;
+
+namespace PatzminiHD.CSLib.Output.Console.Table
 {
     /// <summary>
     /// Base Class for a Table Cell
@@ -135,6 +137,31 @@
                 if (!value.HasValue)
                     return;
                 string? stringValue = value.ToString();
+                if (stringValue == null)
+                    return;
+                Content.Add(stringValue, ForegroundColor, BackgroundColor);
+                AutoDrawMethod();
+            }
+        }
+        /// <summary>
+        /// The Content as a TimeSpan
+        /// </summary>
+        public TimeSpan? ContentTimeSpan
+        {
+            get
+            {
+                if (TimeSpan.TryParse(ContentString, out TimeSpan value))
+                {
+                    return value;
+                }
+                return null;
+            }
+            set
+            {
+                Clear();
+                if (!value.HasValue)
+                    return;
+                string? stringValue = value.ToString("DDd, HH:MM:SS");
                 if (stringValue == null)
                     return;
                 Content.Add(stringValue, ForegroundColor, BackgroundColor);

@@ -50,5 +50,11 @@ namespace PatzminiHD.CSLib.Output.Console.Table
             this.value = value;
             this.type = typeof(DateTime);
         }
+        /// <summary> Create a new Entry object with a TimeSpan type </summary>
+        public Entry(TimeSpan value)
+        {
+            this.value = value;
+            this.type = typeof(TimeSpan);
+        }
     }
 }
