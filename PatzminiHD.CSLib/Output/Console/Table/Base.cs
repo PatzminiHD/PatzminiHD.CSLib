@@ -8,10 +8,10 @@ namespace PatzminiHD.CSLib.Output.Console.Table
     public class Base
     {
         private List<RowBase> rows = new();
-        private List<(List<Entry>, uint)> tableValues = new();
+        private List<(List<Entry>, uint)> tableValues;
         private (List<(Entry, uint)>, uint) columnHeaders = new();
         private List<uint> columnWidths = new();
-        private uint topPos = 0, leftPos = 0;
+        private uint topPos = 0, leftPos = 0, height, firstShownRow = 0;
         private int highlightedRow = -1, highlightedColumn = -1;
         private bool isColored = true, autoDraw = false;
         private ConsoleColor foregroundColor = Get.GetDefaultColor().foregroundColor;
@@ -63,6 +63,22 @@ namespace PatzminiHD.CSLib.Output.Console.Table
         {
             get { return leftPos; }
             set { leftPos = value; PopulateTableRows(); }
+        }
+        /// <summary>
+        /// The Height of the table
+        /// </summary>
+        public uint Height
+        {
+            get { return height; }
+            set { height = value; PopulateTableRows(); }
+        }
+        /// <summary>
+        /// The First shown row of the table, used for scrolling through the table
+        /// </summary>
+        public uint FirstShownRow
+        {
+            get { return firstShownRow; }
+            set { firstShownRow = value; PopulateTableRows(); }
         }
         /// <summary>
         /// The Row that is highlighted <br/>-1 for no highlighting
@@ -156,18 +172,20 @@ namespace PatzminiHD.CSLib.Output.Console.Table
         /// <summary>
         /// Constructor for the TableBase, initialising the table values as well as headers
         /// </summary>
-        public Base(List<(List<Entry>, uint)> tableValues, (List<(Entry, uint)>, uint) columnHeaders)
+        public Base(List<(List<Entry>, uint)> tableValues, (List<(Entry, uint)>, uint) columnHeaders, uint height)
         {
-            TableValues = tableValues;
+            this.tableValues = tableValues;
             ColumnHeaders = columnHeaders;
+            this.height = height;
         }
         /// <summary>
          /// Constructor for the TableBase, initialising the table values as well as the column widths
          /// </summary>
-        public Base(List<(List<Entry>, uint)> tableValues, List<uint> columnWidths)
+        public Base(List<(List<Entry>, uint)> tableValues, List<uint> columnWidths, uint height)
         {
-            TableValues = tableValues;
+            this.tableValues = tableValues;
             ColumnWidths = columnWidths;
+            this.height = height;
         }
         private void AutoDrawMethod()
         {
@@ -205,8 +223,9 @@ namespace PatzminiHD.CSLib.Output.Console.Table
                 j += ColumnHeaders.Item2;
             }
 
-            foreach (var value in TableValues)
+            for(int l = (int)FirstShownRow; l < TableValues.Count && l - FirstShownRow < Height; l++)
             {
+                var value = TableValues[l];
                 List<(Entry, uint)> rowValues = new();
                 for(int k = 0; k < value.Item1.Count; k++)
                 {
