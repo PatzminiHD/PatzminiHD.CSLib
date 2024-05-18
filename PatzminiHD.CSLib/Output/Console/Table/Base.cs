@@ -199,7 +199,7 @@ namespace PatzminiHD.CSLib.Output.Console.Table
             rows = new();
             if (TableValues == null || TableValues.Count == 0 || (ColumnWidths.Count == 0 && (ColumnHeaders.Item1 == null || ColumnHeaders.Item1.Count == 0)))
                 return;
-            uint i = 0, j = 0;
+            uint i = 0, j = 0, heightCounter = 0;
 
             if (ColumnHeaders.Item1 != null && ColumnHeaders.Item1.Count > 0)
             {
@@ -221,9 +221,10 @@ namespace PatzminiHD.CSLib.Output.Console.Table
                 rows.Add(headers);
                 i++;
                 j += ColumnHeaders.Item2;
+                heightCounter = headers.Height;
             }
 
-            for(int l = (int)FirstShownRow; l < TableValues.Count && l - FirstShownRow < Height; l++)
+            for(int l = (int)FirstShownRow; l < TableValues.Count && j + TableValues[l].Item2 < Height; l++)
             {
                 var value = TableValues[l];
                 List<(Entry, uint)> rowValues = new();
