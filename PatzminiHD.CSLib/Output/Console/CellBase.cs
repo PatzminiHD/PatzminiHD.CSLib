@@ -73,19 +73,19 @@
             {
                 System.Console.SetCursorPosition((int)leftPos, (int)(topPos + i));
                 content.Write(i * width, width);
-            }
 
-            //Fill remaining space
-            ConsoleColor tmpForeground = System.Console.ForegroundColor;
-            ConsoleColor tmpBackground = System.Console.BackgroundColor;
-            System.Console.ForegroundColor = content.Content[0].foregroundColor;
-            System.Console.BackgroundColor = content.Content[0].backgroundColor;
-            for (int i = System.Console.CursorLeft; i < LeftPos + Width; i++)
-            {
-                System.Console.Write(' ');
+                //Fill remaining space
+                ConsoleColor tmpForeground = System.Console.ForegroundColor;
+                ConsoleColor tmpBackground = System.Console.BackgroundColor;
+                System.Console.ForegroundColor = content.Content[0].foregroundColor;
+                System.Console.BackgroundColor = content.Content[0].backgroundColor;
+                for (int j = System.Console.CursorLeft; j < LeftPos + Width; j++)
+                {
+                    System.Console.Write(' ');
+                }
+                System.Console.ForegroundColor = tmpForeground;
+                System.Console.BackgroundColor = tmpBackground;
             }
-            System.Console.ForegroundColor = tmpForeground;
-            System.Console.BackgroundColor = tmpBackground;
         }
         /// <summary>
         /// Clear the Content
