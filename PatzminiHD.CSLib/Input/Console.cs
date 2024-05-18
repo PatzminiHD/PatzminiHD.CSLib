@@ -296,16 +296,19 @@ namespace PatzminiHD.CSLib.Input
                                 //Cut the line to exactly the allowed length
                                 temp = line.Substring(0, maxWidth);
                                 //Remove the last word
-                                while (!char.IsWhiteSpace(temp.Last()))
+                                while (temp.Length > 0 && !char.IsWhiteSpace(temp.Last()))
                                 {
                                     temp = temp.Remove(temp.Length - 1);
                                 }
-                                //Remove the last whitespace
-                                temp = temp.Remove(temp.Length - 1);
 
-                                //If the whole line was one word, just cut the word
-                                if (temp.Length <= 0)
+                                if(temp.Length > 0)
                                 {
+                                    //Remove the last whitespace
+                                    temp = temp.Remove(temp.Length - 1);
+                                }
+                                else
+                                {
+                                    //If the whole line was one word, just cut the word
                                     temp = line;
                                 }
                             }
@@ -672,6 +675,9 @@ namespace PatzminiHD.CSLib.Input
                     if (selection.Length > xEnd)
                         xEnd = selection.Length;
                 }
+                if (xEnd < "<Select>".Length)
+                    xEnd = "<Select>".Length;
+
                 xEnd += startingPosition.Left;
 
                 bool flag = true;
