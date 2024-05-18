@@ -179,8 +179,8 @@ namespace PatzminiHD.CSLib.Output.Console.Table
             this.height = height;
         }
         /// <summary>
-         /// Constructor for the TableBase, initialising the table values as well as the column widths
-         /// </summary>
+        /// Constructor for the TableBase, initialising the table values as well as the column widths
+        /// </summary>
         public Base(List<(List<Entry>, uint)> tableValues, List<uint> columnWidths, uint height)
         {
             this.tableValues = tableValues;
