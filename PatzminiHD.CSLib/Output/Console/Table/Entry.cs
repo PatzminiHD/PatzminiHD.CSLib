@@ -26,35 +26,81 @@ namespace PatzminiHD.CSLib.Output.Console.Table
         }
 
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        //Is disabled so that the ValueWasNull() Method can be used to set the value and type instead of typing the
+        //same code every time
+
         /// <summary> Create a new Entry object with a string type </summary>
-        public Entry(string value)
+        public Entry(string? value)
         {
-            this.value = value;
+            if (value != null)
+                this.value = value;
+            else
+                ValueWasNull();
             this.type = typeof(string);
         }
-        /// <summary> Create a new Entry object with a int type </summary>
-        public Entry(int value)
+        /// <summary> Create a new Entry object with a int? type </summary>
+        public Entry(int? value)
         {
-            this.value = value;
-            this.type = typeof(int);
+            if (value != null)
+            {
+                this.value = value;
+                this.type = typeof(int);
+            }
+            else
+                ValueWasNull();
+        }
+        /// <summary> Create a new Entry object with a uint type </summary>
+        public Entry(uint? value)
+        {
+            if (value != null)
+            {
+                this.value = value;
+                this.type = typeof(uint);
+            }
+            else
+                ValueWasNull();
         }
         /// <summary> Create a new Entry object with a double type </summary>
-        public Entry(double value)
+        public Entry(double? value)
         {
-            this.value = value;
-            this.type = typeof(double);
+            if (value != null)
+            {
+                this.value = value;
+                this.type = typeof(double);
+            }
+            else
+                ValueWasNull();
         }
         /// <summary> Create a new Entry object with a DateTime type </summary>
-        public Entry(DateTime value)
+        public Entry(DateTime? value)
         {
-            this.value = value;
-            this.type = typeof(DateTime);
+            if (value != null)
+            {
+                this.value = value;
+                this.type = typeof(DateTime);
+            }
+            else
+                ValueWasNull();
         }
         /// <summary> Create a new Entry object with a TimeSpan type </summary>
-        public Entry(TimeSpan value)
+        public Entry(TimeSpan? value)
         {
-            this.value = value;
-            this.type = typeof(TimeSpan);
+            if (value != null)
+            {
+                this.value = value;
+                this.type = typeof(TimeSpan);
+            }
+            else
+                ValueWasNull();
+        }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+        private void ValueWasNull()
+        {
+            this.value = "NULL";
+            this.type = typeof(string);
         }
     }
 }

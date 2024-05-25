@@ -94,6 +94,31 @@ namespace PatzminiHD.CSLib.Output.Console.Table
             }
         }
         /// <summary>
+        /// The Content as an unsigned Integer
+        /// </summary>
+        public uint? ContentUInt
+        {
+            get
+            {
+                if (uint.TryParse(ContentString, out uint value))
+                {
+                    return value;
+                }
+                return null;
+            }
+            set
+            {
+                Clear();
+                if (!value.HasValue)
+                    return;
+                string? stringValue = value.ToString();
+                if (stringValue == null)
+                    return;
+                Content.Add(stringValue, ForegroundColor, BackgroundColor);
+                AutoDrawMethod();
+            }
+        }
+        /// <summary>
         /// The Content as a Double
         /// </summary>
         public double? ContentDouble

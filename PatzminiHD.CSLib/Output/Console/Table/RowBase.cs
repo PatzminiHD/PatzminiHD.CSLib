@@ -183,6 +183,10 @@
                 {
                     cell.ContentInt = (int)column.Item1.Value;
                 }
+                else if (column.Item1.Type == typeof(uint))
+                {
+                    cell.ContentUInt = (uint)column.Item1.Value;
+                }
                 else if (column.Item1.Type == typeof(double))
                 {
                     cell.ContentDouble = (double)column.Item1.Value;
