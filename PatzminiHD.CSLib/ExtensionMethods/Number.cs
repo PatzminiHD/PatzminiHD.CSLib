@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Formats.Asn1.AsnWriter;
+﻿using System.Numerics;
 
-namespace PatzminiHD.CSLib.Math.Extensions
+namespace PatzminiHD.CSLib.ExtensionMethods
 {
     /// <summary>
     /// Extensions Methods for numbers
@@ -49,7 +43,7 @@ namespace PatzminiHD.CSLib.Math.Extensions
         public static int Map(this int value, int currRangeMin, int currRangeMax, int toRangeMin, int toRangeMax)
         {
             //https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
-            double slope = 1.0 * (toRangeMax - toRangeMin) / (double)(currRangeMax - currRangeMin);
+            double slope = 1.0 * (toRangeMax - toRangeMin) / (currRangeMax - currRangeMin);
             return (int)(toRangeMin + slope * (value - currRangeMin));
         }
         /// <summary>
@@ -64,7 +58,7 @@ namespace PatzminiHD.CSLib.Math.Extensions
         public static double Map(this double value, double currRangeMin, double currRangeMax, double toRangeMin, double toRangeMax)
         {
             //hint64tps://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
-            return toRangeMin + ((toRangeMax - toRangeMin) / (currRangeMax - currRangeMin)) * (value - currRangeMin);
+            return toRangeMin + (toRangeMax - toRangeMin) / (currRangeMax - currRangeMin) * (value - currRangeMin);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using PatzminiHD.CSLib.Math.Extensions;
+﻿using PatzminiHD.CSLib.ExtensionMethods;
 
 namespace PatzminiHD.CSLib.Output.Console
 {
