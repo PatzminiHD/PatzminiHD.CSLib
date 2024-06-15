@@ -60,5 +60,24 @@ namespace PatzminiHD.CSLib.ExtensionMethods
             //hint64tps://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
             return toRangeMin + (toRangeMax - toRangeMin) / (currRangeMax - currRangeMin) * (value - currRangeMin);
         }
+
+        /// <summary>
+        /// Check if an integer is even
+        /// </summary>
+        /// <param name="value">The value to check</param>
+        /// <returns>True if the value is even, otherwise false</returns>
+        public static bool IsEven(this int value)
+        {
+            return value % 2 == 0;
+        }
+        /// <summary>
+        /// Check if an unsigned integer is even
+        /// </summary>
+        /// <param name="value">The value to check</param>
+        /// <returns>True if the value is even, otherwise false</returns>
+        public static bool IsEven(this uint value)
+        {
+            return value % 2 == 0;
+        }
     }
 }
