@@ -43,6 +43,9 @@ namespace PatzminiHD.CSLib.Input.Console
         /// <param name="acceptedArgs"></param>
         public CmdArgsParser(string[] args, List<(List<string> names, ArgType type)> acceptedArgs)
         {
+            var duplicates = CheckDuplicates(acceptedArgs);
+            if (duplicates != null)
+                throw new ArgumentException($"Different arguments can not have the same name (\"{duplicates[0]}\").");
             this.args = ParseArgsInQuotes(args);
             this.acceptedArgs = acceptedArgs;
         }
@@ -63,10 +66,13 @@ namespace PatzminiHD.CSLib.Input.Console
             for (int i = 0; i < args.Length; i++)
             {
                 if (args[i].Length > 2 && !args[i].StartsWith("--"))
-                    throw new ArgumentException("Multi letter arguments have to start with a double dash ('--')");
+                    throw new ArgumentException($"Multi letter arguments have to start with a double dash ('--'). (argument: {args[i]})");
 
                 if(args[i].Length == 2 && !args[i].StartsWith("-"))
-                    throw new ArgumentException("Single letter arguments have to start with single dash ('-')");
+                    throw new ArgumentException($"Single letter arguments have to start with single dash ('-'). (argument: {args[i]})");
+
+                if (args[i].Length == 1)
+                    throw new ArgumentException($"All arguments have to start with a dash ('-'). (argument: {args[i]})");
 
                 for (int j = 0; j < acceptedArgs.Count; j++)
                 {
@@ -156,6 +162,24 @@ namespace PatzminiHD.CSLib.Input.Console
             }
 
             return parsedArgs;
+        }
+
+        private List<string>? CheckDuplicates(List<(List<string> arguments, ArgType argType)> values)
+        {
+            List<string> allArgs = new List<string>();
+            foreach (var value in values)
+            {
+                allArgs.AddRange(value.arguments);
+            }
+            var duplicateArgs = allArgs.GroupBy(x => x)
+              .Where(g => g.Count() > 1)
+              .Select(y => y.Key)
+              .ToList();
+
+            if(duplicateArgs.Any())
+                return duplicateArgs;
+
+            return null;
         }
 
         private string[] ParseArgsInQuotes(string[] args)
