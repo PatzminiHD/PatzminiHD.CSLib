@@ -30,7 +30,7 @@ namespace PatzminiHD.CSLib.Network
             return responseString.Result;
         }
         /// <summary>
-        /// Send a HTTP Get request to a specified url with specified data
+        /// Send a HTTP Get request to a specified url
         /// </summary>
         /// <param name="url">The url or ip address of the server</param>
         /// <returns>The result of the request</returns>
@@ -45,6 +45,16 @@ namespace PatzminiHD.CSLib.Network
             client.Dispose();
 
             return responseString.Result;
+        }
+        /// <summary>
+        /// Send a HTTP Get request to a specified url with specified data
+        /// </summary>
+        /// <param name="httpRequestMessage">The request message to send to the server</param>
+        /// <returns>The result of the request</returns>
+        public static HttpResponseMessage GetRequest(HttpRequestMessage httpRequestMessage)
+        {
+            HttpClient client = new();
+            return client.Send(httpRequestMessage);
         }
     }
 }
