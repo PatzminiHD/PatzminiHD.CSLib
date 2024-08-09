@@ -18,8 +18,8 @@ jobs:
       - name: Build the program
         run: dotnet publish PatzminiHD.CSLib/PatzminiHD.CSLib.csproj -c Release -r win-x64
 
-      - name: Rename the executable file
-        run: mv PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/PatzminiHD.CSLib.dll PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/${tag/\//_}.dll
+      - name: Rename the executable and xml file
+        run: mv PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/PatzminiHD.CSLib.dll PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/${tag/\//_}.dll && mv PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/PatzminiHD.CSLib.xml PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/${tag/\//_}.xml
         env:
           tag: ${{ github.ref_name }}
 
