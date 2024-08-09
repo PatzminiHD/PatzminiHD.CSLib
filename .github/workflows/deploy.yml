@@ -1,0 +1,29 @@
+name: Deploy-PatzminiHD.CSLib
+
+on:
+  push:
+    tags:
+      - 'PatzminiHD.CSLib/v*'
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build the program
+        run: dotnet publish PatzminiHD.CSLib/PatzminiHD.CSLib.csproj -c Release -r win-x64
+
+      - name: Rename the executable file
+        run: mv PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/PatzminiHD.CSLib.dll PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/${tag/\//_}.dll
+        env:
+          tag: ${{ github.ref_name }}
+
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/PatzminiHD.CSLib*.exe"
+          prerelease: ${{ contains(github.ref_name, '-') }} #Set as prerelease if the tag name contains '-' (e.g. PatzminiHD.CSLib/v0.0.1-dev)
