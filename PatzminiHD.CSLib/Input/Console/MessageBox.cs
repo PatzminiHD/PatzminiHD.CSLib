@@ -261,17 +261,19 @@ namespace PatzminiHD.CSLib.Input.Console
                             else
                             {
                                 //If the whole line was one word, just cut the word
-                                temp = line;
+                                temp = line.Substring(0, maxWidth);
                             }
                         }
-                        //Cut line by one to prevent starting the next line with a space
-                        line = line.Substring(1);
                     }
                     else    //If the line is shorter then the max allowed length, just take the whole line
                         temp = line;
 
                     //Remove the part of the line we took from the whole line
                     line = line.Remove(0, temp.Length);
+
+                    //Cut line by one to prevent starting the next line with a space
+                    if (line.StartsWith(' '))
+                        line = line.Substring(1);
 
                     //Add the part of the line we took to the result
                     result.Add(temp);
