@@ -25,5 +25,5 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/PatzminiHD.CSLib*.exe"
+          artifacts: "PatzminiHD.CSLib/bin/Release/net8.0/win-x64/publish/PatzminiHD.CSLib*.dll"
           prerelease: ${{ contains(github.ref_name, '-') }} #Set as prerelease if the tag name contains '-' (e.g. PatzminiHD.CSLib/v0.0.1-dev)
