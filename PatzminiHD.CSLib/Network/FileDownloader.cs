@@ -51,37 +51,40 @@
                     return false;
                 }
             }
-            
+
             using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {
-                if(!response.IsSuccessStatusCode)
+                client.DefaultRequestHeaders.Add("User-Agent", $"{Info.Name}/{Info.Version} ({Environment.Get.OsString})");
+                using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                 {
-                    DownloadFailed?.Invoke(this, new DownloadFailedEventArgs(url, localPath, response.StatusCode.ToString()));
-                    return false;
-                }
-
-                long? totalBytes = response.Content.Headers.ContentLength;
-
-                using (Stream contentStream = await response.Content.ReadAsStreamAsync(),
-                    fileStream = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
-                {
-                    byte[] buffer = new byte[8192];
-                    long totalBytesRead = 0;
-                    int bytesRead;
-
-                    while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                    if (!response.IsSuccessStatusCode)
                     {
-                        await fileStream.WriteAsync(buffer, 0, bytesRead);
-                        totalBytesRead += bytesRead;
-
-                        if(totalBytes.HasValue)
-                        {
-                            DownloadProgess?.Invoke(this, new DownloadProgressEventArgs(url, localPath, (byte)(((double)totalBytesRead / totalBytes.Value) * 100)));
-                        }
+                        DownloadFailed?.Invoke(this, new DownloadFailedEventArgs(url, localPath, response.StatusCode.ToString()));
+                        return false;
                     }
 
-                    DownloadFinished?.Invoke(this, new DownloadFinishedEventArgs(url, localPath));
+                    long? totalBytes = response.Content.Headers.ContentLength;
+
+                    using (Stream contentStream = await response.Content.ReadAsStreamAsync(),
+                        fileStream = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                    {
+                        byte[] buffer = new byte[8192];
+                        long totalBytesRead = 0;
+                        int bytesRead;
+
+                        while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                        {
+                            await fileStream.WriteAsync(buffer, 0, bytesRead);
+                            totalBytesRead += bytesRead;
+
+                            if (totalBytes.HasValue)
+                            {
+                                DownloadProgess?.Invoke(this, new DownloadProgressEventArgs(url, localPath, (byte)(((double)totalBytesRead / totalBytes.Value) * 100)));
+                            }
+                        }
+
+                        DownloadFinished?.Invoke(this, new DownloadFinishedEventArgs(url, localPath));
+                    }
                 }
             }
             return true;
