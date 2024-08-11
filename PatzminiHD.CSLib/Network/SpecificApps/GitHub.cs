@@ -48,11 +48,13 @@ namespace PatzminiHD.CSLib.Network.SpecificApps
             public List<GitHubReleaseAssets> assets;
         };
         /// <summary>
-        /// Get the latest release of a specified repository
+        /// Get the latest release of a specified repository or a string when getting the release failed
         /// </summary>
         /// <param name="repoOwner">The account or organization name that owns the repository</param>
         /// <param name="repoName">The name of the repository</param>
         /// <param name="accessToken">The access token if the repository is private</param>
+        /// <returns>A <see cref="GitHubRelease"/> if getting the latest release was successful,<br/>
+        /// Otherwise a string containing the reason of failure</returns>
         public static Variant<GitHubRelease, string> GetLatestRelease(string repoOwner, string repoName, string? accessToken = null)
         {
             HttpRequestMessage httpRequestMessage = new();
