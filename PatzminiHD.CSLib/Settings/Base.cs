@@ -72,7 +72,7 @@ namespace PatzminiHD.CSLib.Settings
         }
 
         /// <summary>
-        /// Compares two version strings in the format "vX.Y.Z" and returns true if v1 is greater than v2
+        /// Compares two version strings in the format "vX.Y.Z" (the 'v' at the start can be omitted) and returns true if v1 is greater than v2
         /// </summary>
         /// <param name="v1">Version string 1</param>
         /// <param name="v2">Version string 2</param>
@@ -123,6 +123,10 @@ namespace PatzminiHD.CSLib.Settings
                 if (v1Numbers[i] > v2Numbers[i])
                 {
                     return true;
+                }
+                else if (v2Numbers[i] > v1Numbers[i])
+                {
+                    return false;
                 }
             }
             return false;
