@@ -56,10 +56,10 @@ namespace PatzminiHD.CSLib.Input.Console
                 if (response == null || response.Length == 0)
                     return defaultResponse;
 
-                if (defaultResponse && response.ToLower() == "n")
+                if (response.ToLower() == "n")
                     return false;
 
-                if (!defaultResponse && response.ToLower() == "y")
+                if (response.ToLower() == "y")
                     return true;
             }
         }
