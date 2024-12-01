@@ -13,50 +13,50 @@ namespace PatzminiHD.CSLibTest.ExtensionMethodsTests
         [TestMethod]
         public void TestClampInLimit()
         {
-            Assert.AreEqual(10.Clamp(0, 20), 10);
-            Assert.AreEqual(10.5.Clamp(0.5, 20.25), 10.5);
-            Assert.AreEqual(3.141592.Clamp(0, 20), 3.141592);
-            Assert.AreEqual(10m.Clamp(0, 20), 10m);
+            Assert.AreEqual(10, 10.Clamp(0, 20));
+            Assert.AreEqual(10.5, 10.5.Clamp(0.5, 20.25));
+            Assert.AreEqual(3.141592, 3.141592.Clamp(0, 20));
+            Assert.AreEqual(10m, 10m.Clamp(0, 20));
         }
 
         [TestMethod]
         public void TestClampAboveLimit()
         {
-            Assert.AreEqual(10.Clamp(0, 5), 5);
-            Assert.AreEqual(10.5.Clamp(0, 5.5), 5.5);
-            Assert.AreEqual(3.141592.Clamp(0, 0.5), 0.5);
-            Assert.AreEqual(10m.Clamp(0, 5m), 5m);
+            Assert.AreEqual(5, 10.Clamp(0, 5));
+            Assert.AreEqual(5.5, 10.5.Clamp(0, 5.5));
+            Assert.AreEqual(0.5, 3.141592.Clamp(0, 0.5));
+            Assert.AreEqual(5m, 10m.Clamp(0, 5m));
         }
 
         [TestMethod]
         public void TestClampBelowLimit()
         {
-            Assert.AreEqual(10.Clamp(15, 20), 15);
-            Assert.AreEqual(10.5.Clamp(15.5, 20.25), 15.5);
-            Assert.AreEqual(3.141592.Clamp(15, 20), 15);
-            Assert.AreEqual(10m.Clamp(15m, 20), 15m);
+            Assert.AreEqual(15, 10.Clamp(15, 20));
+            Assert.AreEqual(15.5, 10.5.Clamp(15.5, 20.25));
+            Assert.AreEqual(15, 3.141592.Clamp(15, 20));
+            Assert.AreEqual(15m, 10m.Clamp(15m, 20));
         }
 
 
         [TestMethod]
         public void TestMapInLimit()
         {
-            Assert.AreEqual(5.Map(0, 10, 0, 100), 50);
-            Assert.AreEqual(5.5.Map(0, 10, 0, 100), 55);
+            Assert.AreEqual(50, 5.Map(0, 10, 0, 100));
+            Assert.AreEqual(55, 5.5.Map(0, 10, 0, 100));
         }
 
         [TestMethod]
         public void TestMapAboveLimit()
         {
-            Assert.AreEqual(15.Map(0, 10, 0, 100), 150);
-            Assert.AreEqual(15.5.Map(0, 10, 0, 100), 155);
+            Assert.AreEqual(150, 15.Map(0, 10, 0, 100));
+            Assert.AreEqual(155, 15.5.Map(0, 10, 0, 100));
         }
 
         [TestMethod]
         public void TestMapBelowLimit()
         {
-            Assert.AreEqual(-15.Map(0, 10, 0, 100), -150);
-            Assert.AreEqual(-15.5.Map(0, 10, 0, 100), -155);
+            Assert.AreEqual(-150, -15.Map(0, 10, 0, 100));
+            Assert.AreEqual(-155, -15.5.Map(0, 10, 0, 100));
         }
 
         [TestMethod]
