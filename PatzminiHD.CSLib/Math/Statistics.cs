@@ -218,7 +218,7 @@
         /// <throws><see cref="ArgumentException"/> if d is negative</throws>
         public static decimal Sqrt(decimal d)
         {
-            return Sqrt(d);
+            return Sqrt(d, null);
         }
         /// <summary>
         /// Returns the square root of a specified number
