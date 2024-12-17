@@ -1,3 +1,4 @@
+using System.Numerics;
 using Silk.NET.OpenGL;
 
 namespace PatzminiHD.CSLib.Graphics.Silk.NET.Abstractions;
@@ -62,6 +63,34 @@ public class Shader : IDisposable
         {
             //Using the program
             _gl.UseProgram(_handle);
+        }
+        /// <summary>
+        /// Uniforms are properties that applies to the entire geometry
+        /// </summary>
+        /// <param name="name">Name of the uniform</param>
+        /// <param name="value"></param>
+        /// <exception cref="Exception">When the uniform is not found to the shader</exception>
+        public unsafe void SetUniform(string name, Matrix4x4 value)
+        {
+            int location = _gl.GetUniformLocation(_handle, name);
+            if (location == -1)
+                throw new Exception($"{name} uniform not found on shader.");
+
+            _gl.UniformMatrix4(location, 1, false, (float*)&value);
+        }
+        /// <summary>
+        /// Uniforms are properties that applies to the entire geometry
+        /// </summary>
+        /// <param name="name">Name of the uniform</param>
+        /// <param name="value"></param>
+        /// <exception cref="Exception">When the uniform is not found to the shader</exception>
+        public unsafe void SetUniform(string name, Vector3 value)
+        {
+            int location = _gl.GetUniformLocation(_handle, name);
+            if (location == -1)
+                throw new Exception($"{name} uniform not found on shader.");
+
+            _gl.Uniform3(location, value.X, value.Y, value.Z);
         }
         /// <summary>
         /// Uniforms are properties that applies to the entire geometry 
