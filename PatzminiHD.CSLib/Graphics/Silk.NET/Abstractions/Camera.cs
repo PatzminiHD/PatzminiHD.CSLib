@@ -1,4 +1,5 @@
 using System.Numerics;
+using PatzminiHD.CSLib.ExtensionMethods;
 
 namespace PatzminiHD.CSLib.Graphics.Silk.NET.Abstractions;
 
@@ -17,8 +18,9 @@ namespace PatzminiHD.CSLib.Graphics.Silk.NET.Abstractions;
 /// </summary>
 public class Camera
 {
+    private Vector3 position;
     /// <summary> Position of the camera </summary>
-    public Vector3 Position { get; set; }
+    public Vector3 Position { get { return position; } set { position = value; } }
     /// <summary> Vector Pointing to the front of the camera </summary>
     public Vector3 Front { get; set; }
     /// <summary> Vector pointing upwards from the camera </summary>
@@ -30,6 +32,10 @@ public class Camera
     public float Yaw { get; set; } = -90f;
     /// <summary> Pitch of the camera </summary>
     public float Pitch { get; set; }
+
+    /// <summary> True if the <see cref="MoveToPosition(double, Vector3, float, float)"/> Method has been called and the camera
+    ///           has not yet fully returned to center </summary>
+    public bool IsMovingToPosition { get; private set; }
 
     /// <summary> Zoom of the camera </summary>
     private float _zoom = 45f;
@@ -97,5 +103,27 @@ public class Camera
         var returnValue = Matrix4x4.CreatePerspectiveFieldOfView(Math.Conversion.DegreesToRadians(_zoom), AspectRatio, 0.1f, 100f);
         return returnValue;
         //return Matrix4x4.CreateOrthographicOffCenter(-AspectRatio, AspectRatio, -1f, 1f, -1f, 1f);
+    }
+
+
+    /// <summary>
+    /// Move the camera smoothly to a target position. Needs to be called in a Update function until <see cref="IsMovingToPosition"/> is false
+    /// </summary>
+    /// <param name="deltaTime">The delta time of the Update function</param>
+    /// <param name="targetPosition">The target position of the movement</param>
+    /// <param name="speed">How fast the camera should move</param>
+    /// <param name="snapDistance"></param>
+    /// <returns></returns>
+    public bool MoveToPosition(double deltaTime, Vector3 targetPosition, float speed = 1f, float snapDistance = 0.01f)
+    {
+        IsMovingToPosition = true;
+
+        if(position.TransitionTo(targetPosition, deltaTime, speed, snapDistance))
+        {
+            IsMovingToPosition = false;
+            return true;
+        }
+
+        return false;
     }
 }
