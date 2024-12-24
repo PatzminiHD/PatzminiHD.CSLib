@@ -100,7 +100,7 @@ public class Camera
     public Matrix4x4 GetProjectionMatrix()
     {
         var test = Matrix4x4.CreateOrthographicOffCenter(-AspectRatio, AspectRatio, -1f, 1f, -1f, 1f);
-        var returnValue = Matrix4x4.CreatePerspectiveFieldOfView(Math.Conversion.DegreesToRadians(_zoom), AspectRatio, 0.1f, 100f);
+        var returnValue = Matrix4x4.CreatePerspectiveFieldOfView(Math.Conversion.DegreesToRadians(_zoom), AspectRatio, 0.1f, 10000f);
         return returnValue;
         //return Matrix4x4.CreateOrthographicOffCenter(-AspectRatio, AspectRatio, -1f, 1f, -1f, 1f);
     }
