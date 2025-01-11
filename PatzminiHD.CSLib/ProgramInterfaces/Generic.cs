@@ -18,15 +18,18 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
         /// <param name="fileName">The name of the process</param>
         /// <param name="arguments">The arguments that should be given to the process</param>
         /// <param name="useShellExecute">Wether to use shell execute</param>
-        /// <param name="redirectStandardOutput">Wether to redirect the standard output</param>
-        public static void StartProcess(string fileName, string arguments, bool useShellExecute = false, bool redirectStandardOutput = true)
+        /// <param name="redirectOutput">Wether to redirect the standard output</param>
+        /// <returns>The process output if useShellExecute is false and redirectStandardOutput is true</returns>
+        public static (string? output, string? errorOutput) StartProcess(string fileName, string arguments, bool useShellExecute = false, bool redirectOutput = true)
         {
-            if(redirectStandardOutput && useShellExecute)
+            string? output = null, errorOutput = null;
+            if(redirectOutput && useShellExecute)
                 throw new ArgumentException("useShellExecute has to be false to redirect the standard output");
             ProcessStartInfo startInfo = new ProcessStartInfo()
             {
                 UseShellExecute = useShellExecute,
-                RedirectStandardOutput = redirectStandardOutput,
+                RedirectStandardOutput = redirectOutput,
+                RedirectStandardError = redirectOutput,
                 FileName = fileName,
                 Arguments = arguments,
             };
@@ -34,8 +37,16 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
             Process proc = new Process();
             proc.StartInfo = startInfo;
             proc.Start();
+            if(!useShellExecute && redirectOutput)
+            {
+                //Read process output
+                output = proc.StandardOutput.ReadToEnd();
+                errorOutput = proc.StandardError.ReadToEnd();
+            }
             proc.WaitForExit();
             proc.Dispose();
+            
+            return (output, errorOutput);
         }
     }
 }
