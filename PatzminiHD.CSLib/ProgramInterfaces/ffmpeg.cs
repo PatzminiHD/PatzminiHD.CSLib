@@ -37,10 +37,10 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
             if (File.Exists(newFileName))
                 return new ArgumentException("Output file already exists");
 
-            string arguments = $"-i {filename} -c:v libsvtav1 -crf {quality} -cpu-used {cpu_used} ";
+            string arguments = $"-i \"{filename}\" -c:v libsvtav1 -crf {quality} -cpu-used {cpu_used} ";
             if (row_mt)
                 arguments += $"-row-mt 1 ";
-            arguments += $"{newFileName}";
+            arguments += $"\"{newFileName}\"";
 
             Generic.StartProcess("ffmpeg", arguments);
             return null;
