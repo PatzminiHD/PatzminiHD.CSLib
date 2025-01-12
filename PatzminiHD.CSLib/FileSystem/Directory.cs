@@ -29,7 +29,7 @@ namespace PatzminiHD.CSLib.FileSystem
 
             files.AddRange(System.IO.Directory.GetFiles(baseDirectory));
 
-            if(sublevels <= 0)
+            if(sublevels == 0)
                 return files;
 
             foreach (var directory in System.IO.Directory.GetDirectories(baseDirectory))
