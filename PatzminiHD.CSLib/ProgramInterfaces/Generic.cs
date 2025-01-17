@@ -20,7 +20,7 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
         /// <param name="useShellExecute">Wether to use shell execute</param>
         /// <param name="redirectOutput">Wether to redirect the standard output</param>
         /// <returns>The process output if useShellExecute is false and redirectStandardOutput is true</returns>
-        public static (string? output, string? errorOutput) StartProcess(string fileName, string arguments, bool useShellExecute = false, bool redirectOutput = true)
+        public static (string? output, string? errorOutput) StartProcess(string fileName, string arguments, bool useShellExecute = false, bool redirectOutput = true, bool redirectOutputToConsole = false)
         {
             string? output = null, errorOutput = null;
             if(redirectOutput && useShellExecute)
@@ -36,15 +36,28 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
 
             Process proc = new Process();
             proc.StartInfo = startInfo;
-            proc.Start();
-            if(!useShellExecute && redirectOutput)
+
+            var exitEventHandler = new EventHandler((object? sender, EventArgs args) => proc.Kill());
+            AppDomain.CurrentDomain.ProcessExit += exitEventHandler;
+
+            if(!useShellExecute && redirectOutput && redirectOutputToConsole)
             {
-                //Read process output
-                output = proc.StandardOutput.ReadToEnd();
-                errorOutput = proc.StandardError.ReadToEnd();
+                proc.OutputDataReceived += (s, e) => { Console.WriteLine(e.Data); output += e.Data; };
+                proc.ErrorDataReceived += (s, e) => { Console.WriteLine(e.Data); errorOutput += e.Data; };
             }
+            else if(!useShellExecute && redirectOutput)
+            {
+                proc.OutputDataReceived += (s, e) => output += e.Data;
+                proc.ErrorDataReceived += (s, e) => errorOutput += e.Data;
+            }
+
+            proc.Start();            
+            proc.BeginOutputReadLine();
+            proc.BeginErrorReadLine();
             proc.WaitForExit();
             proc.Dispose();
+
+            AppDomain.CurrentDomain.ProcessExit -= exitEventHandler;
             
             return (output, errorOutput);
         }
