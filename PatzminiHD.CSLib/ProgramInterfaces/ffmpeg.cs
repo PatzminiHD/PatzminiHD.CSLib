@@ -19,8 +19,9 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
         /// -cpu-used sets how efficient the compression will be. Default is 1. Lower values mean slower encoding with better quality, and vice-versa. Valid values are from 0 to 8 inclusive</param>
         /// <param name="row_mt">True to enable multi-threading<br/>
         /// -row-mt 1 enables row-based multi-threading which maximizes CPU usage. To enable fast decoding performance, also add tiles (i.e. -tiles 4x1 or -tiles 2x2 for 4 tiles). Enabling row-mt is only faster when the CPU has more threads than the number of encoded tiles</param>
+        /// <param name="redirectOutputToConsole">True when you want to redirect the ffmpeg output to the console; otherwise false</param>
         /// <returns></returns>
-        public static Exception? ReencodeVideo(string filename, string newFileName, uint quality, uint cpu_used = 1, bool row_mt = false)
+        public static Exception? ReencodeVideo(string filename, string newFileName, uint quality, uint cpu_used = 1, bool row_mt = false, bool redirectOutputToConsole = true)
         {
             if (Environment.Get.OS != Environment.Get.OperatingSystem.Linux)
                 return new NotSupportedException("FFmpeg is currently only supported on linux");
@@ -42,7 +43,7 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
                 arguments += $"-row-mt 1 ";
             arguments += $"\"{newFileName}\"";
 
-            Generic.StartProcess("ffmpeg", arguments);
+            Generic.StartProcess("ffmpeg", arguments, false, true, redirectOutputToConsole);
             return null;
         }
     }

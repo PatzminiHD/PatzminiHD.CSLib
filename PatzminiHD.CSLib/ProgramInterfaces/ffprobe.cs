@@ -15,7 +15,7 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
             if(!File.Exists(filePath))
                 return false;
 
-            var ffprobeOutput = Generic.StartProcess("ffprobe", $"-loglevel error -show_entries stream=codec_type -of default=nw=1 \"{filePath}\"", false, true).output;
+            var ffprobeOutput = Generic.StartProcess("ffprobe", $"-loglevel error -show_entries stream=codec_type -of default=nw=1 \"{filePath}\"", false, true, false).output;
 
             if(ffprobeOutput != null && ffprobeOutput.Contains("video"))
                 return true;
@@ -33,7 +33,7 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
             if(!File.Exists(filePath))
                 return null;
 
-            return Generic.StartProcess("ffprobe", $"-v error -select_streams v:0 -show_entries stream=codec_name -of default=nokey=1:noprint_wrappers=1 \"{filePath}\"", false, true).output;
+            return Generic.StartProcess("ffprobe", $"-v error -select_streams v:0 -show_entries stream=codec_name -of default=nokey=1:noprint_wrappers=1 \"{filePath}\"", false, true, false).output;
         }
     }
 }
