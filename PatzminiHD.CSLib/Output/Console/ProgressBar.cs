@@ -139,10 +139,18 @@ namespace PatzminiHD.CSLib.Output.Console
         /// <param name="top"></param>
         public void Draw(int left, int top)
         {
-            System.Console.SetCursorPosition(left, top);
+            if(left >= 0 && top >= 0)
+                System.Console.SetCursorPosition(left, top);
+            else
+            {
+                left = System.Console.CursorLeft;
+                top = System.Console.CursorTop;
+            }
+                
             byte percent = (byte)Number.Map(this.value, this.minValue, this.maxValue, 0, 100);
             
             System.Console.Write($"{percent}%");
+
             System.Console.SetCursorPosition(left + 5, top);
             System.Console.Write("[");
             for (int i = 6; i < Number.Map(this.Value, this.MinValue, this.MaxValue, 6, (int)this.Length); i++)
