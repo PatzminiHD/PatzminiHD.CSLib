@@ -1,4 +1,5 @@
 ﻿using System.Net.WebSockets;
+using System.Text;
 
 namespace PatzminiHD.CSLib.Network
 {
@@ -29,6 +30,30 @@ namespace PatzminiHD.CSLib.Network
 
             return responseString.Result;
         }
+
+        /// <summary>
+        /// Send a HTTP Post request to a specified url with specified data
+        /// </summary>
+        /// <param name="url">The url or ip address of the server</param>
+        /// <param name="json">The JSON string of the request</param>
+        /// <returns>The result of the request</returns>
+        //https://stackoverflow.com/questions/4015324/send-http-post-request-in-net
+        public static string PostRequest(string url, string json)
+        {
+            HttpClient client = new();
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = client.PostAsync(url, content);
+            response.Wait();
+
+            var responseString = response.Result.Content.ReadAsStringAsync();
+            responseString.Wait();
+
+            client.Dispose();
+
+            return responseString.Result;
+        }
+
         /// <summary>
         /// Send a HTTP Get request to a specified url
         /// </summary>
