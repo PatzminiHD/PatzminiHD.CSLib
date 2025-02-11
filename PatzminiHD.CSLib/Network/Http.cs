@@ -18,6 +18,7 @@ namespace PatzminiHD.CSLib.Network
         public static string PostRequest(string url, Dictionary<string, string> values)
         {
             HttpClient client = new();
+            client.Timeout = new TimeSpan(0, 0, 5);
             HttpContent content = new FormUrlEncodedContent(values);
 
             var response = client.PostAsync(url, content);
@@ -41,6 +42,7 @@ namespace PatzminiHD.CSLib.Network
         public static string PostRequest(string url, string json)
         {
             HttpClient client = new();
+            client.Timeout = new TimeSpan(0, 0, 5);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = client.PostAsync(url, content);
@@ -63,6 +65,7 @@ namespace PatzminiHD.CSLib.Network
         public static string GetRequest(string url)
         {
             HttpClient client = new();
+            client.Timeout = new TimeSpan(0, 0, 5);
 
             var responseString = client.GetStringAsync(url);
             responseString.Wait();
