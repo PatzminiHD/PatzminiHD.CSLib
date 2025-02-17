@@ -79,5 +79,12 @@ namespace PatzminiHD.CSLib.ExtensionMethods
         {
             return value % 2 == 0;
         }
+
+        public static void Swap<T>(ref T n0, ref T n1) where T : INumber<T>
+        {
+            T tmp = n0;
+            n0 = n1;
+            n1 = tmp;
+        }
     }
 }
