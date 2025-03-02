@@ -10,11 +10,21 @@ public class GCode
     private int _bedTemp = -1;
     private double _xMin = -1, _yMin = -1, _xMax = -1, _yMax = -1;
 
+    /// <summary> Initialise a GCode object </summary>
+    /// <param name="xMin">The minimum value of the X coordinate</param>
+    /// <param name="yMin">The minimum value of the Y coordinate</param>
+    /// <param name="xMax">The maximum value of the X coordinate</param>
+    /// <param name="yMax">The maximum value of the Y coordinate</param>
+    /// <param name="hotendTemp">The Temperature of the hotend (-1 to disable heating)</param>
+    /// <param name="bedTemp">The Temperature of the bed (-1 to disable heating)</param>
     public GCode(double xMin, double yMin, double xMax, double yMax, int hotendTemp = -1, int bedTemp = -1)
     {
         Init(xMin, yMin, xMax, yMax, hotendTemp, bedTemp);
     }
 
+    /// <summary>
+    /// Initialise a GCode object
+    /// </summary>
     public GCode() { }
 
     /// <summary> Homes all axes, optionally start heating hotend and bed </summary>
