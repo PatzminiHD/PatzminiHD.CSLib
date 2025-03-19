@@ -43,7 +43,19 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
                 arguments += $"-row-mt 1 ";
             arguments += $"\"{newFileName}\"";
 
-            Generic.StartProcess("ffmpeg", arguments, false, true, redirectOutputToConsole);
+            var result = Generic.StartProcess("ffmpeg", arguments, false, true, redirectOutputToConsole);
+            if((result.output != null && result.output.Contains("[q] command received")) || (result.errorOutput != null && result.errorOutput.Contains("[q] command received")))
+            {
+                return new Exception("Encoding has been interrupted by user");
+            }
+            else if((result.output != null && result.output.Contains("Exiting normally, received signal 2.")) || (result.errorOutput != null && result.errorOutput.Contains("Exiting normally, received signal 2.")))
+            {
+                return new Exception("ffmpeg received Ctrl-C");
+            }
+            else if((result.output != null && result.output.Contains("Conversion failed!")) || (result.errorOutput != null && result.errorOutput.Contains("Conversion failed!")))
+            {
+                return new Exception("Conversion failed!");
+            }
             return null;
         }
     }
