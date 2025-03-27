@@ -18,7 +18,8 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
         /// <param name="fileName">The name of the process</param>
         /// <param name="arguments">The arguments that should be given to the process</param>
         /// <param name="useShellExecute">Wether to use shell execute</param>
-        /// <param name="redirectOutput">Wether to redirect the standard output</param>
+        /// <param name="redirectOutput">Wether to redirect the output to the return values of this method</param>
+        /// <param name="redirectOutputToConsole">Wether to redirect the output to the console</param>
         /// <returns>The process output if useShellExecute is false and redirectStandardOutput is true</returns>
         public static (string? output, string? errorOutput) StartProcess(string fileName, string arguments, bool useShellExecute = false, bool redirectOutput = true, bool redirectOutputToConsole = false)
         {

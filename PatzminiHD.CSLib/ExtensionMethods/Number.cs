@@ -80,6 +80,12 @@ namespace PatzminiHD.CSLib.ExtensionMethods
             return value % 2 == 0;
         }
 
+        /// <summary>
+        /// Swap 2 numbers
+        /// </summary>
+        /// <typeparam name="T">The type of the number</typeparam>
+        /// <param name="n0">Number 0</param>
+        /// <param name="n1">Number 1</param>
         public static void Swap<T>(ref T n0, ref T n1) where T : INumber<T>
         {
             T tmp = n0;
