@@ -28,6 +28,11 @@ namespace PatzminiHD.CSLib.Output
             {
                 try
                 {
+                    if(value == null)
+                    {
+                        _logFilePath = null;
+                        return;
+                    }
                     var directoryName = Path.GetDirectoryName(value);
                     var fileName = DateTime.UtcNow.ToString("yyMMdd-HHmmss") + '_' + Path.GetFileName(value);
 
@@ -170,7 +175,7 @@ namespace PatzminiHD.CSLib.Output
         /// <summary>
         /// Log a message with <see cref="LoggingLevel.Verbose"/>
         /// </summary>
-        /// <param name="message">The message to log</param
+        /// <param name="message">The message to log</param>
         /// <param name="subsystem">Optional: The name of a subsystem where the log originated from,
         ///                         for easier tracing</param>
         public static void LogVerbose(string message, string subsystem = "", [CallerMemberName] string callerName = "")
