@@ -20,8 +20,9 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
         /// <param name="useShellExecute">Wether to use shell execute</param>
         /// <param name="redirectOutput">Wether to redirect the output to the return values of this method</param>
         /// <param name="redirectOutputToConsole">Wether to redirect the output to the console</param>
+        /// <param name="timeoutMillis">How long to wait for the process to exit in milliseconds<br/>to wait indefinitely, leave default or input a negative number</param>
         /// <returns>The process output if useShellExecute is false and redirectStandardOutput is true</returns>
-        public static (string? output, string? errorOutput) StartProcess(string fileName, string arguments, bool useShellExecute = false, bool redirectOutput = true, bool redirectOutputToConsole = false)
+        public static (string? output, string? errorOutput) StartProcess(string fileName, string arguments, bool useShellExecute = false, bool redirectOutput = true, bool redirectOutputToConsole = false, int timeoutMillis = -1)
         {
             string? output = null, errorOutput = null;
             if(redirectOutput && useShellExecute)
@@ -38,7 +39,13 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
             Process proc = new Process();
             proc.StartInfo = startInfo;
 
-            var exitEventHandler = new EventHandler((object? sender, EventArgs args) => proc.Kill());
+            var exitEventHandler = new EventHandler((object? sender, EventArgs args) => {
+                try
+                {
+                    proc.Kill();
+                }
+                catch { /* Catch if process has already been disposed. Also, we are exiting anyway */ }
+                });
             AppDomain.CurrentDomain.ProcessExit += exitEventHandler;
 
             if(!useShellExecute && redirectOutput && redirectOutputToConsole)
@@ -55,12 +62,26 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
             proc.Start();            
             proc.BeginOutputReadLine();
             proc.BeginErrorReadLine();
-            proc.WaitForExit();
+            if(timeoutMillis < 0)
+                proc.WaitForExit();
+            else
+                proc.WaitForExit(timeoutMillis);
+            proc.Kill();
             proc.Dispose();
 
             AppDomain.CurrentDomain.ProcessExit -= exitEventHandler;
             
             return (output, errorOutput);
+        }
+        /// <summary>
+        /// Check if a program exists by trying to start it<br/>
+        /// (Intended to be used for linux programs e.g. 'uptime')
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static bool ProgramExists(string filename)
+        {
+
         }
     }
 }
