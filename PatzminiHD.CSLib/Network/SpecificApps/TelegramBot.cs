@@ -68,9 +68,14 @@ public class TelegramBot
     /// </summary>
     public async Task Stop()
     {
-        await InformUsers("Bot stopped!");
-        _cancelToken.Cancel();
-        Logging.LogInfo("Bot stopped!", "TelegramBot");
+        if(!_cancelToken.IsCancellationRequested)
+        {
+            await InformUsers("Bot stopped!");
+            _cancelToken.Cancel();
+            Logging.LogInfo("Bot stopped!", "TelegramBot");
+        }
+        else
+            Logging.LogInfo("Bot stop requested, but was already requested before", "TelegramBot");
     }
 
     /// <summary>
