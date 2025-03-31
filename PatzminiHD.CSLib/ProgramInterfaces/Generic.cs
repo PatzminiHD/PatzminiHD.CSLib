@@ -77,11 +77,33 @@ namespace PatzminiHD.CSLib.ProgramInterfaces
         /// Check if a program exists by trying to start it<br/>
         /// (Intended to be used for linux programs e.g. 'uptime')
         /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
+        /// <param name="filename">The name (or name and path) of the program</param>
+        /// <returns>True if the specified program could be started, otherwise false</returns>
         public static bool ProgramExists(string filename)
         {
-
+            Process proc = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = false,
+                RedirectStandardError = false,
+                FileName = filename,
+            };
+            proc.StartInfo = startInfo;
+            try
+            {
+                proc.Start();
+                proc.Kill();
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                proc.Dispose();
+            }
+            return true;
         }
     }
 }
