@@ -53,29 +53,47 @@ public class TelegramBot
     /// <summary>
     /// Start the bot
     /// </summary>
-    public async Task Start()
+    /// <param name="informUsers">True to send a message to the informUsers, otherwise false</param>
+    public async Task Start(bool informUsers = true)
     {
+        _cancelToken = new();
         _bot.StartReceiving(
             updateHandler: HandleUpdate,
             errorHandler: HandleError,
             cancellationToken: _cancelToken.Token
         );
         Logging.LogInfo("Bot started!", "TelegramBot");
-        await InformUsers("Bot started!");
+        if(informUsers)
+            await InformUsers("Bot started!");
     }
     /// <summary>
     /// Stop the bot
     /// </summary>
-    public async Task Stop()
+    /// <param name="informUsers">True to send a message to the informUsers, otherwise false</param>
+    public async Task Stop(bool informUsers = true)
     {
         if(!_cancelToken.IsCancellationRequested)
         {
-            await InformUsers("Bot stopped!");
+            if(informUsers)
+                await InformUsers("Bot stopped!");
             _cancelToken.Cancel();
             Logging.LogInfo("Bot stopped!", "TelegramBot");
         }
         else
             Logging.LogInfo("Bot stop requested, but was already requested before", "TelegramBot");
+    }
+
+    /// <summary>
+    /// Restart the bot
+    /// </summary>
+    /// <param name="informUsers">True to send a message to the informUsers, otherwise false</param>
+    /// <returns></returns>
+    public async Task Restart(bool informUsers = false)
+    {
+        Logging.LogInfo("Restart requested", "TelegramBot");
+        await Stop(informUsers);
+        await Task.Delay(500);
+        await Start(informUsers);
     }
 
     /// <summary>
@@ -182,7 +200,12 @@ public class TelegramBot
     private async Task HandleError(ITelegramBotClient _, Exception exception, CancellationToken cancellationToken)
     {
         Logging.LogError(exception.ToString(), "TelegramBot");
-        await InformUsers($"Exception occured:\n{exception.ToString()}");
+
+        //Wait 60 seconds
+        await Task.Delay(60000);
+        await Restart(false);
+
+        // await InformUsers($"Exception occured:\n{exception.ToString()}");
     }
 
     private async Task SendKeyboard(long userId)
