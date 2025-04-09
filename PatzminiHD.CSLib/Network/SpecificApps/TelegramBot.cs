@@ -17,6 +17,7 @@ public class TelegramBot
     private CancellationTokenSource _cancelToken = new();
     private List<(string command, Func<string, long, TelegramBotClient, Task<(string? message, ParseMode parseMode)>> commandAction)> _commandActions;
     private Func<string, long, TelegramBotClient, Task<(string? message, ParseMode parseMode)>>? _unknownCommandAction;
+    private Func<ITelegramBotClient, CallbackQuery?, Task>? _callbackQueryAction;
     private List<long>? _allowedUsers;
     private List<long>? _informUsers;
 
@@ -32,12 +33,14 @@ public class TelegramBot
         The command action can optionally return a string that is sent to the user as a message</param>*/        
     /// <param name="allowedUsers">List of user IDs that are allowed to use the bot. null to allow every user</param>
     /// <param name="unknownCommandAction">Is called when the received command has no action defined in <paramref name="commandActions"/></param>
+    /// <param name="callbackQueryAction">Action that is called when a callback queary is received</param>
     /// <param name="informUsers">List of users that should be informed of events (bot starting, invalid users trying to access the bot...)</param>
     public TelegramBot(
         string token,
         ReplyKeyboardMarkup replyKeyboardMarkup,
         List<(string command, Func<string, long, TelegramBotClient, Task<(string?, ParseMode)>> commandAction)> commandActions,
         Func<string, long, TelegramBotClient, Task<(string?, ParseMode)>>? unknownCommandAction,
+        Func<ITelegramBotClient, CallbackQuery?, Task>? callbackQueryAction,
         List<long>? allowedUsers,
         List<long>? informUsers
         )
@@ -47,6 +50,7 @@ public class TelegramBot
         _commandActions = commandActions;
         _allowedUsers = allowedUsers;
         _unknownCommandAction = unknownCommandAction;
+        _callbackQueryAction = callbackQueryAction;
         _informUsers = informUsers;
     }
 
@@ -99,11 +103,11 @@ public class TelegramBot
     /// <summary>
     /// Is called each time the bot receives a message
     /// </summary>
-    /// <param name="_"></param>
+    /// <param name="bot"></param>
     /// <param name="update"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    private async Task HandleUpdate(ITelegramBotClient _, Update update, CancellationToken cancellationToken)
+    private async Task HandleUpdate(ITelegramBotClient bot, Update update, CancellationToken cancellationToken)
     {
         Logging.LogVerbose($"Received update: {update.Type}", "TelegramBot");
         switch (update.Type)
@@ -111,6 +115,11 @@ public class TelegramBot
             // A message was received
             case UpdateType.Message:
                 await HandleMessage(update.Message!);
+                break;
+
+            case UpdateType.CallbackQuery:
+                if(_callbackQueryAction != null)
+                    await _callbackQueryAction(bot, update.CallbackQuery);
                 break;
             
             default:
