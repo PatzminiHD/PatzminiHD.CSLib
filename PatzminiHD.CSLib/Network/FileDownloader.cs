@@ -18,15 +18,15 @@
         /// </summary>
         public event EventHandler<DownloadFailedEventArgs>? DownloadFailed;
 
-        private System.Net.Http.Headers.AuthenticationHeaderValue? _customAuthHeader;
+        private List<(string name, string value)>? _customHeaders;
 
         /// <summary>
         /// Create a new instance of the FileDownloader object
         /// </summary>
-        /// <param name="customAuthHeader">Optional, add a custom authorization header to each download request</param>
-        public FileDownloader(System.Net.Http.Headers.AuthenticationHeaderValue? customAuthHeader = null)
+        /// <param name="customHeaders">Optional, custom headers added to each download request</param>
+        public FileDownloader(List<(string name, string value)>? customHeaders = null)
         {
-            _customAuthHeader = customAuthHeader;
+            _customHeaders = customHeaders;
         }
 
         /// <summary>
@@ -64,39 +64,51 @@
 
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Add("User-Agent", $"{Info.Name}/{Info.Version} ({Environment.Get.OsString})");
-                if (_customAuthHeader != null)
-                    client.DefaultRequestHeaders.Authorization = _customAuthHeader;
+                HttpRequestMessage httpRequestMessage = new();
+                httpRequestMessage.Method = HttpMethod.Get;
+                httpRequestMessage.RequestUri = new Uri(url);
+                httpRequestMessage.Headers.Add("User-Agent", $"{Info.Name}/{Info.Version} ({Environment.Get.OsString})");
 
-                using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+                if (_customHeaders != null)
+                    foreach (var header in _customHeaders)
+                        httpRequestMessage.Headers.Add(header.name, header.value);
+
+                using (HttpResponseMessage response = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead))
                 {
                     if (!response.IsSuccessStatusCode)
                     {
                         DownloadFailed?.Invoke(this, new DownloadFailedEventArgs(url, localPath, response.StatusCode.ToString()));
                         return false;
                     }
-
-                    long? totalBytes = response.Content.Headers.ContentLength;
-
-                    using (Stream contentStream = await response.Content.ReadAsStreamAsync(),
-                        fileStream = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                    try
                     {
-                        byte[] buffer = new byte[8192];
-                        long totalBytesRead = 0;
-                        int bytesRead;
+                        long? totalBytes = response.Content.Headers.ContentLength;
 
-                        while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                        using (Stream contentStream = await response.Content.ReadAsStreamAsync(),
+                            fileStream = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
                         {
-                            await fileStream.WriteAsync(buffer, 0, bytesRead);
-                            totalBytesRead += bytesRead;
+                            byte[] buffer = new byte[8192];
+                            long totalBytesRead = 0;
+                            int bytesRead;
 
-                            if (totalBytes.HasValue)
+                            while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                             {
-                                DownloadProgess?.Invoke(this, new DownloadProgressEventArgs(url, localPath, (byte)(((double)totalBytesRead / totalBytes.Value) * 100)));
-                            }
-                        }
+                                await fileStream.WriteAsync(buffer, 0, bytesRead);
+                                totalBytesRead += bytesRead;
 
-                        DownloadFinished?.Invoke(this, new DownloadFinishedEventArgs(url, localPath));
+                                if (totalBytes.HasValue)
+                                {
+                                    DownloadProgess?.Invoke(this, new DownloadProgressEventArgs(url, localPath, (byte)(((double)totalBytesRead / totalBytes.Value) * 100)));
+                                }
+                            }
+
+                            DownloadFinished?.Invoke(this, new DownloadFinishedEventArgs(url, localPath));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DownloadFailed?.Invoke(this, new DownloadFailedEventArgs(url, localPath, ex.ToString()));
+                        return false;
                     }
                 }
             }
