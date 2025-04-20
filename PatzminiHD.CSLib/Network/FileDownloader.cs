@@ -18,6 +18,16 @@
         /// </summary>
         public event EventHandler<DownloadFailedEventArgs>? DownloadFailed;
 
+        private System.Net.Http.Headers.AuthenticationHeaderValue? _customAuthHeader;
+
+        /// <summary>
+        /// Create a new instance of the FileDownloader object
+        /// </summary>
+        /// <param name="customAuthHeader">Optional, add a custom authorization header to each download request</param>
+        public FileDownloader(System.Net.Http.Headers.AuthenticationHeaderValue? customAuthHeader = null)
+        {
+            _customAuthHeader = customAuthHeader;
+        }
 
         /// <summary>
         /// Download a file from a given url to a given Path
@@ -55,6 +65,9 @@
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("User-Agent", $"{Info.Name}/{Info.Version} ({Environment.Get.OsString})");
+                if (_customAuthHeader != null)
+                    client.DefaultRequestHeaders.Authorization = _customAuthHeader;
+
                 using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                 {
                     if (!response.IsSuccessStatusCode)
