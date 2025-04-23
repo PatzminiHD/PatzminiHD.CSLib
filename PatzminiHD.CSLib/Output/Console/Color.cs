@@ -33,5 +33,28 @@ namespace PatzminiHD.CSLib.Output.Console
             else
                 System.Console.ResetColor();
         }
+
+
+        /// <summary>
+        /// Write a colored line (Writes the text with a \n at the end)
+        /// </summary>
+        /// <param name="text">The text of the line</param>
+        /// <param name="color">The color the text should have</param>
+        public static void WriteColoredLine(string text, ConsoleColor color)
+        {
+            WriteColored(text + "\n", color);
+        }
+        /// <summary>
+        /// Write colored text
+        /// </summary>
+        /// <param name="text">The text to write</param>
+        /// <param name="color">The color the text should have</param>
+        public static void WriteColored(string text, ConsoleColor color)
+        {
+            var currentColor = System.Console.ForegroundColor;
+            System.Console.ForegroundColor = color;
+            System.Console.WriteLine(text);
+            System.Console.ForegroundColor = currentColor;
+        }
     }
 }
