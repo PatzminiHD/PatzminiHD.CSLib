@@ -8,6 +8,8 @@ on:
 jobs:
   coverage:
     runs-on: self-hosted
+    env:
+      DOTNET_INSTALL_DIR: "../dotnet-install-dir"
     
     steps:
       - uses: actions/checkout@v4
