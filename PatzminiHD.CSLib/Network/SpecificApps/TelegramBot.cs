@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using System.Timers;
 using PatzminiHD.CSLib.Output;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -13,6 +13,7 @@ namespace PatzminiHD.CSLib.Network.SpecificApps;
 public class TelegramBot
 {
     private TelegramBotClient _bot;
+    private string _token;
     private ReplyKeyboardMarkup _keyboardMarkup;
     private CancellationTokenSource _cancelToken = new();
     private List<(string command, Func<string, long, TelegramBotClient, Task<(string? message, ParseMode parseMode)>> commandAction)> _commandActions;
@@ -30,7 +31,7 @@ public class TelegramBot
         - string: the full message of the user<br/>
         - long: the user ID<br/>
         - <see cref="TelegramBotClient"/>: the bot object<br/>
-        The command action can optionally return a string that is sent to the user as a message</param>*/        
+        The command action can optionally return a string that is sent to the user as a message</param>*/
     /// <param name="allowedUsers">List of user IDs that are allowed to use the bot. null to allow every user</param>
     /// <param name="unknownCommandAction">Is called when the received command has no action defined in <paramref name="commandActions"/></param>
     /// <param name="callbackQueryAction">Action that is called when a callback queary is received</param>
@@ -42,16 +43,25 @@ public class TelegramBot
         Func<string, long, TelegramBotClient, Task<(string?, ParseMode)>>? unknownCommandAction,
         Func<ITelegramBotClient, CallbackQuery?, Task>? callbackQueryAction,
         List<long>? allowedUsers,
-        List<long>? informUsers
+        List<long>? informUsers,
+        TimeSpan? timerInterval = null,
+        Action<TelegramBotClient>? timerAction = null
         )
     {
         _bot = new TelegramBotClient(token);
+        _token = token;
         _keyboardMarkup = replyKeyboardMarkup;
         _commandActions = commandActions;
         _allowedUsers = allowedUsers;
         _unknownCommandAction = unknownCommandAction;
         _callbackQueryAction = callbackQueryAction;
         _informUsers = informUsers;
+        if (timerInterval != null && timerAction != null)
+        {
+            var timer = new System.Timers.Timer(timerInterval.Value);
+            timer.Elapsed += (sender, e) => timerAction(_bot);
+            timer.Start();
+        }
     }
 
     /// <summary>
@@ -69,6 +79,20 @@ public class TelegramBot
         Logging.LogInfo("Bot started!", "TelegramBot");
         if(informUsers)
             await InformUsers("Bot started!");
+    }
+    /// <summary>
+    /// Start the bot in error handling mode.
+    /// This will just respond to every message that it will be ignored
+    /// </summary>
+    private void StartWhenError()
+    {
+        _cancelToken = new();
+        _bot.StartReceiving(
+            updateHandler: HandleUpdateWhenError,
+            errorHandler: HandleErrorWhenError,
+            cancellationToken: _cancelToken.Token
+        );
+        Logging.LogInfo("Error handler bot started", "TelegramBot");
     }
     /// <summary>
     /// Stop the bot
@@ -210,11 +234,43 @@ public class TelegramBot
     {
         Logging.LogError(exception.ToString(), "TelegramBot");
 
-        //Wait 60 seconds
-        await Task.Delay(60000);
-        await Restart(false);
+        Logging.LogVerbose("Stopping bot...", "TelegramBot");
+        await Stop(false);
+
+        await Task.Delay(1000);
+        _bot = new(_token);
+
+        Logging.LogVerbose("Starting bot in error mode...", "TelegramBot");
+        StartWhenError();
+        await Task.Delay(10000);
+        Logging.LogVerbose("Stopping bot...", "TelegramBot");
+        await Stop(false);
+
+        await Task.Delay(1000);
+        _bot = new(_token);
+
+        Logging.LogVerbose("Starting bot in normal mode...", "TelegramBot");
+        await Start(false);
 
         // await InformUsers($"Exception occured:\n{exception.ToString()}");
+    }
+    /// <summary>
+    /// Is called each time the bot receives a message while being in error mode
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="update"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    private async Task HandleUpdateWhenError(ITelegramBotClient bot, Update update, CancellationToken cancellationToken)
+    {
+        Logging.LogWarning($"Received update on error: {update.Type}", "TelegramBot");
+        if(update.Type == UpdateType.Message)        
+            await bot.SendMessage(update.Message!.Chat, $"ERROR handling is active, ignoring message:\n'{update.Message.Text}'");
+    }
+    private async Task HandleErrorWhenError(ITelegramBotClient _, Exception exception, CancellationToken cancellationToken)
+    {
+        Logging.LogError($"Received error on error: {exception.ToString()}", "TelegramBot");
+        await Task.CompletedTask;
     }
 
     private async Task SendKeyboard(long userId)

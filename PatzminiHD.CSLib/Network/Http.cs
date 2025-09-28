@@ -1,5 +1,6 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PatzminiHD.CSLib.Network
 {
@@ -55,6 +56,27 @@ namespace PatzminiHD.CSLib.Network
 
             return responseString.Result;
         }
+        /// <summary>
+        /// Send a HTTP Post request to a specified url with specified data asynchronously
+        /// </summary>
+        /// <param name="url">The url or ip address of the server</param>
+        /// <param name="json">The JSON string of the request</param>
+        /// <returns>The result of the request</returns>
+        //https://stackoverflow.com/questions/4015324/send-http-post-request-in-net
+        public static async Task<string> PostRequestAsync(string url, string json)
+        {
+            HttpClient client = new();
+            client.Timeout = new TimeSpan(0, 0, 5);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(url, content);
+
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            client.Dispose();
+
+            return responseString;
+        }
 
         /// <summary>
         /// Send a HTTP Get request to a specified url
@@ -73,6 +95,23 @@ namespace PatzminiHD.CSLib.Network
             client.Dispose();
 
             return responseString.Result;
+        }
+        /// <summary>
+        /// Send a HTTP Get request to a specified url asynchronously
+        /// </summary>
+        /// <param name="url">The url or ip address of the server</param>
+        /// <returns>The result of the request</returns>
+        //https://stackoverflow.com/questions/4015324/send-http-post-request-in-net
+        public static async Task<string> GetRequestAsync(string url)
+        {
+            HttpClient client = new();
+            client.Timeout = new TimeSpan(0, 0, 5);
+
+            var responseString = await client.GetStringAsync(url);
+
+            client.Dispose();
+
+            return responseString;
         }
         /// <summary>
         /// Send a HTTP Get request to a specified url with specified data
